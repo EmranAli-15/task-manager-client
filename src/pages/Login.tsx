@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, redirect } from "react-router";
+import { Link } from "react-router";
 import { useMyProvider } from "../contextApi/ContextApi";
 
 export default function Login() {
@@ -86,7 +86,8 @@ export default function Login() {
         <div>
             <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign In</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 text-center">Sign In</h2>
+                    <small className="flex items-center justify-center text-red-600 mt-2 mb-6">{error}</small>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>

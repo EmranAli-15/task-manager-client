@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type TDataInfo = {
@@ -18,7 +19,8 @@ export const MyProvider = ({ children }: { children: React.ReactNode }) => {
         const token = localStorage.getItem("token");
         if (token) {
             const data = JSON.parse(token);
-            setUser(data)
+            const decoded = jwtDecode(data);
+            setUser(decoded)
         }
         setLoading(false);
     }, [loading]);
