@@ -50,7 +50,7 @@ export default function Home() {
                             categories.map((item: TCard, index: any) => {
                                 return (
                                     <div className='w-full h-74 mt-5 relative' key={index}>
-                                        <img className='object-cover w-full h-full blur-[3px]' src={item.image} alt="" />
+                                        <img className='object-cover w-full h-full blur-[2px]' src={item.image} alt="" />
                                         <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
                                     </div>
                                 )

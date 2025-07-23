@@ -2,6 +2,7 @@ import { Box, Button, Modal } from '@mui/material'
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import ImageIcon from '@mui/icons-material/Image';
+import "../App.css";
 
 import { Link } from 'react-router'
 import Container from '../components/Container';
@@ -32,7 +33,7 @@ const style = {
 
 export default function About() {
 
-  const [links, setLinks] = useState(["https://facebook.com", "https://youtube.com", "https://google.com"]);
+  const [links, setLinks] = useState(["https://facebook.com", "https://youtube.com", "https://google.com", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis omnis quos quo velit, possimus voluptatem consequatur praesentium soluta.", "https://istagram.com"]);
   const [photos, setPhotos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -83,15 +84,16 @@ export default function About() {
           </Box>
         </Modal>
 
-
-
         <textarea name="" className='w-full outline-none rounded bg-black/5 p-2' id=""></textarea>
 
         {
+          links.length > 0 && <p>Links:</p>
+        }
+        {
           links.map((link, index) => (
-            <div className='flex items-center gap-x-2 bg-black/5' key={index}>
-              <Button><InsertLinkIcon></InsertLinkIcon></Button>
-              <p>{link}</p>
+            <div className='flex items-center bg-black/5' key={index}>
+              <button className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'><InsertLinkIcon></InsertLinkIcon></button>
+              <p className='AddNoteInput-box p-1 w-full font-thin h-8 overflow-hidden'>{link}</p>
             </div>
           ))
         }
