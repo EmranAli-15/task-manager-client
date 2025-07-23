@@ -1,12 +1,15 @@
 import { Box, Button, Modal } from '@mui/material'
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ImageIcon from '@mui/icons-material/Image';
 import "../App.css";
 
 import { Link } from 'react-router'
 import Container from '../components/Container';
 import { useState } from 'react';
+import { nlNL } from '@mui/material/locale';
 
 
 
@@ -39,16 +42,40 @@ export default function About() {
   const [description, setDescription] = useState("");
 
   const [linkInsert, setLinkInsert] = useState("");
+  const [linkUpdate, setLinkUpdate] = useState(0);
 
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = ({ link, index }: { link: string | null, index: number }) => {
+    if (link) {
+      setLinkInsert(link)
+      setLinkUpdate(index);
+    }
+    setOpen(true);
+  }
   const handleClose = () => {
-    let updatedLinks = [...links, linkInsert];
-    setLinks(updatedLinks);
+    if (linkUpdate && linkInsert) {
+      const copiedLinks = [...links]
+      copiedLinks.splice(linkUpdate, 1, linkInsert);
+      setLinks(copiedLinks);
+      setLinkUpdate(0);
+    }
+    else if (linkInsert) {
+      let updatedLinks = [...links, linkInsert];
+      setLinks(updatedLinks);
+    }
     setOpen(false);
     setLinkInsert("");
   };
+
+
+
+  const handleDeleteLink = (index: number) => {
+    const copiedLinks = [...links]
+    copiedLinks.splice(index, 1);
+    setLinks(copiedLinks);
+  }
+
 
   return (
     <Container>
@@ -60,7 +87,7 @@ export default function About() {
 
       <div className='bg-[#f6f7f880] my-2 p-3 rounded'>
         <div className='flex items-center gap-x-2 justify-end'>
-          <Button onClick={handleOpen}><InsertLinkIcon className='text-black'></InsertLinkIcon></Button>
+          <Button onClick={() => handleOpen({ link: null, index: 0 })}><InsertLinkIcon className='text-black'></InsertLinkIcon></Button>
           <Button><ImageIcon className='text-black'></ImageIcon></Button>
         </div>
 
@@ -74,6 +101,9 @@ export default function About() {
           aria-describedby="keep-mounted-modal-description"
         >
           <Box sx={style}>
+            <div className='flex items-center justify-end'>
+              <Button onClick={handleClose}><CheckBoxIcon></CheckBoxIcon></Button>
+            </div>
             <input
               type="url"
               onChange={(e) => setLinkInsert(e.target.value)}
@@ -92,8 +122,17 @@ export default function About() {
         {
           links.map((link, index) => (
             <div className='flex items-center bg-black/5' key={index}>
-              <button className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'><InsertLinkIcon></InsertLinkIcon></button>
-              <p className='AddNoteInput-box p-1 w-full font-thin h-8 overflow-hidden'>{link}</p>
+              <button
+                onClick={() => handleOpen({ link, index })}
+                className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
+                <InsertLinkIcon></InsertLinkIcon>
+              </button>
+              <p className='AddNoteInput-box p-1 w-full font-thin'>{link}</p>
+              <button
+                onClick={() => handleDeleteLink(index)}
+                className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
+                <RemoveCircleOutlineIcon></RemoveCircleOutlineIcon>
+              </button>
             </div>
           ))
         }
