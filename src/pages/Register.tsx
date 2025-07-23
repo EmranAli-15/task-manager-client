@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { useMyProvider } from '../contextApi/ContextApi';
+import { Alert, Button } from '@mui/material';
 
 export default function Register() {
 
@@ -58,7 +59,7 @@ export default function Register() {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if(password !== confirmPassword) return setError("password not matched.");
+        if (password !== confirmPassword) return setError("password not matched.");
         setLoading(true);
         handleRegister();
     }
@@ -68,7 +69,7 @@ export default function Register() {
             <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
                     <h2 className="text-2xl font-bold text-gray-900 text-center">Register</h2>
-                    <small className="flex items-center justify-center text-red-600 mt-2 mb-6">{error}</small>
+                    {error && <Alert severity="error">{error}</Alert>}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
@@ -78,7 +79,7 @@ export default function Register() {
                                 value={name}
                                 required
                                 type="text"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
                                 placeholder="your@gmail.com"
                             />
                         </div>
@@ -90,7 +91,7 @@ export default function Register() {
                                 value={email}
                                 required
                                 type="email"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
                                 placeholder="your@gmail.com"
                             />
                         </div>
@@ -102,7 +103,7 @@ export default function Register() {
                                 value={password}
                                 required
                                 type="password"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -114,7 +115,7 @@ export default function Register() {
                                 value={confirmPassword}
                                 required
                                 type="password"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -123,14 +124,15 @@ export default function Register() {
                             <a href="#" className="text-sm text-indigo-600 hover:text-indigo-500">Forgot password?</a>
                         </div>
 
-                        <button
+                        <Button
+                            variant='contained'
                             type="submit"
                             disabled={loading}
                             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors cursor-pointer">
                             {
                                 loading ? "Logging..." : "Sign Up"
                             }
-                        </button>
+                        </Button>
                     </form>
 
                     <div className="mt-6 text-center text-sm text-gray-600">
