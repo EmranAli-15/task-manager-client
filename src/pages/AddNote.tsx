@@ -1,15 +1,14 @@
 import { Box, Button, Modal } from '@mui/material'
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import ImageIcon from '@mui/icons-material/Image';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import "../App.css";
 
 import { Link } from 'react-router'
 import Container from '../components/Container';
 import { useState } from 'react';
-import { nlNL } from '@mui/material/locale';
 
 
 
@@ -36,13 +35,14 @@ const style = {
 
 export default function About() {
 
-  const [links, setLinks] = useState(["https://facebook.com", "https://youtube.com", "https://google.com", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis omnis quos quo velit, possimus voluptatem consequatur praesentium soluta.", "https://istagram.com"]);
-  const [photos, setPhotos] = useState([]);
+  const [links, setLinks] = useState(["https://facebook.com", "https://youtube.com"]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+
+
   const [linkInsert, setLinkInsert] = useState("");
-  const [linkUpdate, setLinkUpdate] = useState(0);
+  const [linkUpdate, setLinkUpdate] = useState(-1);
 
 
   const [open, setOpen] = useState(false);
@@ -54,11 +54,11 @@ export default function About() {
     setOpen(true);
   }
   const handleClose = () => {
-    if (linkUpdate && linkInsert) {
+    if (linkUpdate >= 0 && linkInsert) {
       const copiedLinks = [...links]
       copiedLinks.splice(linkUpdate, 1, linkInsert);
       setLinks(copiedLinks);
-      setLinkUpdate(0);
+      setLinkUpdate(-1);
     }
     else if (linkInsert) {
       let updatedLinks = [...links, linkInsert];
@@ -74,25 +74,21 @@ export default function About() {
     const copiedLinks = [...links]
     copiedLinks.splice(index, 1);
     setLinks(copiedLinks);
+    setLinkInsert("");
+    setOpen(false);
   }
 
 
   return (
     <Container>
-      <div className='flex items-center justify-end'>
+      <nav className='flex items-center justify-between pt-2'>
         <Link to="/">
-          <Button variant="contained" endIcon={<SummarizeIcon></SummarizeIcon>}>Back Home</Button>
+          <Button variant="outlined" className='text-slate-400!' startIcon={<ArrowBackIcon></ArrowBackIcon>}>Back Home</Button>
         </Link>
-      </div>
+        <Button variant="outlined" className='text-slate-400!' endIcon={<OnlinePredictionIcon></OnlinePredictionIcon>}>Save Cloud</Button>
+      </nav>
 
-      <div className='bg-[#f6f7f880] my-2 p-3 rounded'>
-        <div className='flex items-center gap-x-2 justify-end'>
-          <Button onClick={() => handleOpen({ link: null, index: 0 })}><InsertLinkIcon className='text-black'></InsertLinkIcon></Button>
-          <Button><ImageIcon className='text-black'></ImageIcon></Button>
-        </div>
-
-
-
+      <div className='text-white my-2 p-3 rounded'>
         <Modal
           keepMounted
           open={open}
@@ -102,10 +98,17 @@ export default function About() {
         >
           <Box sx={style}>
             <div className='flex items-center justify-end'>
-              <Button onClick={handleClose}><CheckBoxIcon></CheckBoxIcon></Button>
+              <Button
+                onClick={handleClose}>
+                <CheckBoxIcon></CheckBoxIcon>
+              </Button>
+              <Button
+                onClick={() => handleDeleteLink(linkUpdate)}>
+                <DeleteIcon className='text-red-500'></DeleteIcon>
+              </Button>
             </div>
             <input
-              type="url"
+              type="text"
               onChange={(e) => setLinkInsert(e.target.value)}
               value={linkInsert}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
@@ -114,29 +117,48 @@ export default function About() {
           </Box>
         </Modal>
 
-        <textarea name="" className='w-full outline-none rounded bg-black/5 p-2' id=""></textarea>
 
-        {
-          links.length > 0 && <p>Links:</p>
-        }
-        {
-          links.map((link, index) => (
-            <div className='flex items-center bg-black/5' key={index}>
-              <button
-                onClick={() => handleOpen({ link, index })}
-                className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
-                <InsertLinkIcon></InsertLinkIcon>
-              </button>
-              <p className='AddNoteInput-box p-1 w-full font-thin'>{link}</p>
-              <button
-                onClick={() => handleDeleteLink(index)}
-                className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
-                <RemoveCircleOutlineIcon></RemoveCircleOutlineIcon>
-              </button>
-            </div>
-          ))
-        }
+        {/* TITLE SECTION */}
+        <section>
+          <input
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
+            placeholder='Title'
+            type="text"
+            className='w-full outline-none text-white text-2xl h-10 mb-2 p-2 font-semibold border-b'
+          />
+        </section>
 
+
+        {/* LINK SECTION */}
+        <section className='my-2'>
+          <div className='flex items-center px-2 justify-end'>
+            <button onClick={() => handleOpen({ link: null, index: -1 })}><InsertLinkIcon className='text-white cursor-pointer'></InsertLinkIcon></button>
+          </div>
+
+          {
+            links.map((link, index) => (
+              <div className='flex items-center bg-black/5' key={index}>
+                <button
+                  onClick={() => handleOpen({ link, index })}
+                  className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
+                  <InsertLinkIcon></InsertLinkIcon>
+                </button>
+                <p className='border-b p-1 w-full font-thin text-gray-500'>{link}</p>
+              </div>
+            ))
+          }
+        </section>
+
+
+        {/* TEXTAREA SECTION */}
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+          autoFocus
+          placeholder='Note'
+          className='w-full h-screen outline-none mt-3'>
+        </textarea>
       </div>
 
     </Container>

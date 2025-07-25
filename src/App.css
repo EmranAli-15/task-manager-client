@@ -1,4 +1,12 @@
 .AddNoteInput-box {
     /* box-shadow: inset 5px 5px 5px #cbced1, inset -5px -5px 5px #ffffff; */
-    box-shadow: inset 2px 2px 2px #cbced1, inset -2px -2px 2px #fff;
+    box-shadow: inset 1px 1px 1px #cbced1, inset -1px -1px 1px #fff;
+}
+
+.bg-image {
+    background-image: url("./assets/nbg.jpeg"); 
+    background-blend-mode: multiply;
+    background-repeat: repeat;
+    background-size: contain;
+    min-height: 100vh;
 }

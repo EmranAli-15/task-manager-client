@@ -1,6 +1,9 @@
 import { Button } from '@mui/material'
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import SummarizeIcon from '@mui/icons-material/Summarize';
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
 
 import { Link } from 'react-router'
 import { useMyProvider } from '../contextApi/ContextApi'
@@ -34,11 +37,31 @@ export default function Home() {
 
     return (
         <Container>
-            <div className='flex flex-col gap-x-5'>
-                <div className='flex items-center justify-end'>
+            <div className='flex flex-col gap-x-5 pt-2'>
+
+
+                <div className='flex items-center justify-center'>
+                    <Paper
+                        className='bg-transparent! border border-[#1976d2ad]'
+                        component="form"
+                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+                    >
+                        <InputBase
+                            className='text-white!'
+                            sx={{ ml: 1, flex: 1 }}
+                            placeholder="Search Google Maps"
+                            inputProps={{ 'aria-label': 'search google maps' }}
+                        />
+                        <IconButton className='text-white!' type="button" sx={{ p: '10px' }} aria-label="search">
+                            <SearchIcon />
+                        </IconButton>
+                    </Paper>
+                </div>
+
+                <div className='flex items-center justify-center mt-2'>
                     <div className='flex items-center gap-x-2'>
                         <Link to="add-note">
-                            <Button variant="contained" endIcon={<AddBoxIcon></AddBoxIcon>}>Add Note</Button>
+                            <Button variant="outlined" className='text-slate-400!' endIcon={<AddBoxIcon></AddBoxIcon>}>Add Note</Button>
                         </Link>
                     </div>
                 </div>
@@ -47,14 +70,18 @@ export default function Home() {
                 <div>
                     {
                         loading ? <HomeCardSkeleton></HomeCardSkeleton> :
-                            categories.map((item: TCard, index: any) => {
-                                return (
-                                    <div className='w-full h-74 mt-5 relative' key={index}>
-                                        <img className='object-cover w-full h-full blur-[2px]' src={item.image} alt="" />
-                                        <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
-                                    </div>
-                                )
-                            })
+                            <div className='grid md:grid-cols-3 gap-2'>
+                                {
+                                    categories.map((item: TCard, index: any) => {
+                                        return (
+                                            <div className='w-full h-60 mt-5 relative' key={index}>
+                                                <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
+                                                <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                     }
                 </div>
             </div>
