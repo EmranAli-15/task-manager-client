@@ -10,3 +10,8 @@
     background-size: contain;
     min-height: 100vh;
 }
+
+select option {
+  background-color: #000000;
+  height: 36px!;
+}
