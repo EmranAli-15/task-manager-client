@@ -1,17 +1,16 @@
 .AddNoteInput-box {
-    /* box-shadow: inset 5px 5px 5px #cbced1, inset -5px -5px 5px #ffffff; */
-    box-shadow: inset 1px 1px 1px #cbced1, inset -1px -1px 1px #fff;
+  /* box-shadow: inset 5px 5px 5px #cbced1, inset -5px -5px 5px #ffffff; */
+  box-shadow: inset 1px 1px 1px #cbced1, inset -1px -1px 1px #fff;
 }
 
 .bg-image {
-    background-image: url("./assets/nbg.jpeg"); 
-    background-blend-mode: multiply;
-    background-repeat: repeat;
-    background-size: contain;
-    min-height: 100vh;
+  background-image: url("./assets/nbg.jpeg");
+  background-blend-mode: multiply;
+  background-size: contain;
+  min-height: 100vh;
 }
 
 select option {
   background-color: #000000;
-  height: 36px!;
+  height: 36px !;
 }

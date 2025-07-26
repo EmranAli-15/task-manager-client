@@ -5,6 +5,7 @@ import Inside from "../pages/Inside";
 import AddNote from "../pages/AddNote";
 import Protected, { Locked } from "../protectedRoutes/Protected";
 import Register from "../pages/Register";
+import Notes from "../pages/Notes";
 
 const Router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const Router = createBrowserRouter([
     {
         path: "/add-note",
         element: <Protected><AddNote></AddNote></Protected>,
+    },
+    {
+        path: "/notes/:id",
+        element: <Protected><Notes></Notes></Protected>,
     },
     {
         path: "/inside",

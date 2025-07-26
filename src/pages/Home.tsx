@@ -28,7 +28,6 @@ export default function Home() {
         fetch(`http://localhost:5000/api/userNotes/${user.id}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setCategories(data?.data?.categories)
                 setLoading(false);
             })
@@ -74,10 +73,10 @@ export default function Home() {
                                 {
                                     categories.map((item: TCard, index: any) => {
                                         return (
-                                            <div className='w-full h-60 mt-5 relative' key={index}>
+                                            <Link to={`/notes/${item._id}`} className='w-full h-60 mt-5 relative' key={index}>
                                                 <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
                                                 <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
-                                            </div>
+                                            </Link>
                                         )
                                     })
                                 }
