@@ -48,8 +48,8 @@ export default function Home() {
                         <InputBase
                             className='text-white!'
                             sx={{ ml: 1, flex: 1 }}
-                            placeholder="Search Google Maps"
-                            inputProps={{ 'aria-label': 'search google maps' }}
+                            placeholder="Search Your Notes"
+                            inputProps={{ 'aria-label': 'search your notes' }}
                         />
                         <IconButton className='text-white!' type="button" sx={{ p: '10px' }} aria-label="search">
                             <SearchIcon />

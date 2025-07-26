@@ -7,7 +7,7 @@ import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import "../App.css";
 
 import { useState } from 'react';
-import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
 import Container from '../components/Container';
 import { useMyProvider } from '../contextApi/ContextApi';
 
@@ -36,6 +36,7 @@ const style = {
 
 export default function About() {
   const { user } = useMyProvider();
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -133,13 +134,12 @@ export default function About() {
       {error && <Alert severity="error">{error}</Alert>}
       <nav className='pt-2'>
         <div className='flex items-center justify-between'>
-          <Link to="/">
-            <Button
-              variant="outlined"
-              className='text-slate-400! h-9'
-              startIcon={<ArrowBackIcon></ArrowBackIcon>}>
-            </Button>
-          </Link>
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outlined"
+            className='text-slate-400! h-9'
+            startIcon={<ArrowBackIcon></ArrowBackIcon>}>
+          </Button>
 
           <Button>
             <select onChange={(e) => setCategoryId(e.target.value)} className='border rounded-sm border-[#295480] text-gray-400 outline-0 h-9'>
