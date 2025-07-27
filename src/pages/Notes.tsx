@@ -10,6 +10,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 
 
 import "../App.css"
+import { baseURL } from '../utils/baseURL';
 
 
 type TNote = {
@@ -28,25 +29,38 @@ export default function Notes() {
     const { user } = useMyProvider();
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
+
+
+    const handleFetchData = async () => {
+        try {
+            const data = { userId: user.id, categoryId: id };
+            const response = await fetch(`${baseURL}/api/getNotes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Data retrieved failed!');
+            }
+
+            setNotes(result.data);
+            setLoading(false);
+        } catch (error: any) {
+            setLoading(false);
+            setError(error.message);
+        }
+    }
 
     useEffect(() => {
-        const data = { userId: user.id, categoryId: id };
-        setLoading(true)
-        fetch(`http://localhost:5000/api/getNotes`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
-        )
-            .then(res => res.json())
-            .then(data => {
-                setNotes(data.data)
-                setLoading(false);
-            })
-    }, [user.id]);
+        handleFetchData();
+    }, [user?.id, id]);
 
 
     const sendingDataInsideComponent = (data: any) => {
@@ -74,44 +88,47 @@ export default function Notes() {
 
                 {
                     loading ? <NotesCardSkeleton></NotesCardSkeleton> :
-                        notes.length == 0 ?
-                            <Alert severity="warning">No notes saved!</Alert> :
-                            <div className='grid md:grid-cols-3 gap-2 h-60'>
-                                {
-                                    notes.map((note: TNote) => {
-                                        const title = note.title ?? '';
-                                        const details = note.details ?? '';
-                                        const headerColor = note.color ? note.color?.header : '#314158';
-                                        const bodyColor = note.color ? note.color?.body : '#1d293d';
-                                        return <div
-                                            onClick={() => sendingDataInsideComponent(note)}
-                                            key={note._id}
-                                            style={{ backgroundColor: bodyColor }}
-                                            className="text-white rounded-[30px] noteCardShadow h-60 cursor-pointer">
-                                            <div
-                                                style={{ backgroundColor: headerColor }}
-                                                className="p-4 rounded-t-[20px] flex items-center justify-between">
-                                                <div>
-                                                    <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'></p>
-                                                    <p className='text-slate-800 bg-slate-800 rounded w-16 h-2 my-1'></p>
-                                                    <p className='text-slate-800 bg-slate-800 rounded w-32 h-2'></p>
+                        error && !loading ? <Alert severity="error">{error}</Alert> :
+                            !error && !loading && notes.length == 0 ? <Alert severity="warning">No notes saved!</Alert> :
+                                <div className='grid md:grid-cols-3 gap-2 h-60'>
+                                    {
+                                        notes.map((note: TNote) => {
+                                            const title = note.title ?? '';
+                                            const details = note.details ?? '';
+                                            const headerColor = note.color ? note.color?.header : '#314158';
+                                            const bodyColor = note.color ? note.color?.body : '#1d293d';
+                                            return <div
+                                                onClick={() => sendingDataInsideComponent(note)}
+                                                key={note._id}
+                                                style={{ backgroundColor: bodyColor }}
+                                                className="text-white rounded-[30px] noteCardShadow h-60 cursor-pointer">
+                                                <div
+                                                    style={{ backgroundColor: headerColor }}
+                                                    className="p-4 rounded-t-[20px] flex items-center justify-between">
+                                                    <div>
+                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-10 h-2'></p>
+                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-16 h-2 my-1'></p>
+                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-32 h-2'></p>
+                                                        {/* <p className='bg-slate-800 rounded w-10 h-2'></p>
+                                                        <p className='bg-slate-800 rounded w-16 h-2 my-1'></p>
+                                                        <p className='bg-slate-800 rounded w-32 h-2'></p> */}
+                                                    </div>
+                                                    <div>
+                                                        <PushPinIcon className='text-slate-400 rotate-25'></PushPinIcon>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <PushPinIcon className='text-slate-400 rotate-25'></PushPinIcon>
+                                                <div className='p-4'>
+                                                    <p className='text-slate-400 font-medium text-lg line-clamp-1'>
+                                                        {title}
+                                                    </p>
+                                                    <p className='mt-5 text-slate-400 line-clamp-3'>
+                                                        {details}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className='p-4'>
-                                                <p className='text-slate-400 font-medium text-lg line-clamp-1'>
-                                                    {title}
-                                                </p>
-                                                <p className='mt-5 text-slate-400 line-clamp-3'>
-                                                    {details}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    })
-                                }
-                            </div>
+                                        })
+                                    }
+                                </div>
                 }
             </div>
         </Container>

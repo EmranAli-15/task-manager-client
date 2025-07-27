@@ -1,7 +1,6 @@
 import "../App.css";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import { Alert, Box, Button, LinearProgress, Modal } from '@mui/material'
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
@@ -9,12 +8,14 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
+import HomeIcon from '@mui/icons-material/Home';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router'
 import Container from '../components/Container';
 import { useMyProvider } from '../contextApi/ContextApi';
+import { baseURL } from "../utils/baseURL";
 
 
 const style = {
@@ -39,7 +40,8 @@ export default function AddNote() {
   const [links, setLinks] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
-  const [color, setColor] = useState({header:"#ffdf20", body:"#fff085"});
+  const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
+  const [coming, setComing] = useState("");
 
 
   const [open, setOpen] = useState(false);
@@ -82,20 +84,20 @@ export default function AddNote() {
 
 
   const handleColorCode = (color: string) => {
-    if(color == 'yellow'){
-      setColor({header:"#ffdf20", body:"#fff085"})
+    if (color == 'yellow') {
+      setColor({ header: "#ffdf20", body: "#fff085" })
     }
-    else if(color == 'green'){
-      setColor({header:"#05df72", body:"#7bf1a8"})
+    else if (color == 'green') {
+      setColor({ header: "#05df72", body: "#7bf1a8" })
     }
-    else if(color == 'red'){
-      setColor({header:"#ff6467", body:"#ffa2a2"})
+    else if (color == 'red') {
+      setColor({ header: "#ff6467", body: "#ffa2a2" })
     }
-    else if(color == 'white'){
-      setColor({header:"#fff", body:"#e2e8f0"})
+    else if (color == 'white') {
+      setColor({ header: "#fff", body: "#e2e8f0" })
     }
     else {
-      setColor({header:"#314158", body:"#1d293d"})
+      setColor({ header: "#314158", body: "#1d293d" })
     }
     setOpenColor(false);
   }
@@ -124,7 +126,7 @@ export default function AddNote() {
     }
     else {
       try {
-        const response = await fetch('http://localhost:5000/api/createNote', {
+        const response = await fetch(`${baseURL}/api/createNote`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -149,6 +151,13 @@ export default function AddNote() {
     }
   }
 
+
+
+  const handleUpComing = () => {
+    setComing("Up Coming Feature!!");
+    setTimeout(() => setComing(""), 3000);
+  }
+
   return (
     <Container>
       <div>
@@ -159,6 +168,7 @@ export default function AddNote() {
         }
       </div>
       {error && <Alert severity="error">{error}</Alert>}
+
 
 
 
@@ -175,11 +185,11 @@ export default function AddNote() {
         <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
           <div>
             <Button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
               variant="outlined"
               className='text-slate-400! h-9 normal-case!'
-              startIcon={<ArrowBackIcon></ArrowBackIcon>}>
-              Back
+              startIcon={<HomeIcon></HomeIcon>}>
+              Home
             </Button>
           </div>
 
@@ -221,7 +231,7 @@ export default function AddNote() {
               onClick={() => setOpenColor(!openColor)}
               variant="outlined"
               className='text-slate-400! normal-case!'
-              endIcon={<ColorLensIcon style={{color: color.header}}></ColorLensIcon>}>
+              endIcon={<ColorLensIcon style={{ color: color.header }}></ColorLensIcon>}>
               Color
             </Button>
             {
@@ -237,6 +247,7 @@ export default function AddNote() {
 
           <div>
             <Button
+              onClick={handleUpComing}
               variant="outlined"
               className='text-slate-400! normal-case!'
               endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
@@ -246,6 +257,7 @@ export default function AddNote() {
 
           <div>
             <Button
+              onClick={handleUpComing}
               variant="outlined"
               className='text-slate-400! normal-case!'
               endIcon={<LandscapeIcon className="text-green-400"></LandscapeIcon>}>
@@ -263,6 +275,7 @@ export default function AddNote() {
         </div>
       </nav>
 
+      {coming && <Alert severity="warning">{coming}</Alert>}
 
 
 

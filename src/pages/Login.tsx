@@ -2,10 +2,11 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import { useMyProvider } from "../contextApi/ContextApi";
 import { Alert, Button } from "@mui/material";
+import { baseURL } from "../utils/baseURL";
 
 export default function Login() {
-    const [email, setEmail] = useState("emran@gmail.com");
-    const [password, setPassword] = useState("emran");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -20,7 +21,7 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await fetch('http://localhost:5000/api/loginUser', {
+            const response = await fetch(`${baseURL}/api/loginUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

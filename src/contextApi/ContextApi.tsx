@@ -25,6 +25,9 @@ export const MyProvider = ({ children }: { children: React.ReactNode }) => {
             const decoded = jwtDecode(data);
             setUser(decoded)
         }
+        else{
+            setUser(null);
+        }
         setLoading(false);
         setTokenLoading(false);
     }, [loading]);

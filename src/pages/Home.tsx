@@ -1,15 +1,13 @@
-import { Button } from '@mui/material'
+import { Alert, Button } from '@mui/material'
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Link } from 'react-router'
 import { useMyProvider } from '../contextApi/ContextApi'
 import Container from '../components/Container';
 import { useEffect, useState } from 'react';
 import HomeCardSkeleton from '../ui/HomeCardSkeleton';
+import { baseURL } from '../utils/baseURL';
 
 type TCard = {
     name: string,
@@ -18,20 +16,40 @@ type TCard = {
 }
 
 export default function Home() {
-    const { user } = useMyProvider();
+    const { user, setLoading: providerLoading } = useMyProvider();
     const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+
+
+    const handleLogOut = () => {
+        localStorage.removeItem("token");
+        providerLoading(true);
+    }
+
+
+    const handleFetchData = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/userNotes/${user.id}`);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Data retrieved failed!');
+            }
+
+            setCategories(result.data.categories);
+            setLoading(false);
+        } catch (error: any) {
+            setLoading(false);
+            setError(error.message);
+        }
+    }
 
 
     useEffect(() => {
-        setLoading(true)
-        fetch(`http://localhost:5000/api/userNotes/${user.id}`)
-            .then(res => res.json())
-            .then(data => {
-                setCategories(data?.data?.categories)
-                setLoading(false);
-            })
-    }, [user?.id])
+        handleFetchData();
+    }, [user.id])
 
 
     return (
@@ -57,7 +75,10 @@ export default function Home() {
                     </Paper>
                 </div> */}
 
-                <div className='flex items-center justify-center mt-2'>
+                <div className='flex items-center justify-between mt-2'>
+                    <div>
+                        <Button onClick={handleLogOut} variant='outlined' className='text-slate-400! normal-case!' startIcon={<LogoutIcon className='rotate-180'></LogoutIcon>}>Log Out</Button>
+                    </div>
                     <div className='flex items-center gap-x-2'>
                         <Link to="add-note">
                             <Button variant="outlined" className='text-slate-400!' endIcon={<AddBoxIcon></AddBoxIcon>}>Add Note</Button>
@@ -66,21 +87,23 @@ export default function Home() {
                 </div>
 
 
-                <div>
+                <div className='mt-5'>
                     {
                         loading ? <HomeCardSkeleton></HomeCardSkeleton> :
-                            <div className='grid md:grid-cols-3 gap-2'>
-                                {
-                                    categories.map((item: TCard, index: any) => {
-                                        return (
-                                            <Link to={`/notes/${item._id}`} className='w-full h-60 mt-5 relative' key={index}>
-                                                <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
-                                                <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
-                                            </Link>
-                                        )
-                                    })
-                                }
-                            </div>
+                            error && !loading ? <Alert severity="error">{error}</Alert> :
+                                !error && !loading && categories.length == 0 ? <Alert severity="warning">You have not any notes!</Alert> :
+                                    <div className='grid md:grid-cols-3 gap-2'>
+                                        {
+                                            categories.map((item: TCard, index: any) => {
+                                                return (
+                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 mt-5 relative' key={index}>
+                                                        <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
+                                                        <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
+                                                    </Link>
+                                                )
+                                            })
+                                        }
+                                    </div>
                     }
                 </div>
             </div>

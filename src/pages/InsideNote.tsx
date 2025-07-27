@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router'
 import Container from '../components/Container';
 import { useMyProvider } from '../contextApi/ContextApi';
+import { baseURL } from '../utils/baseURL';
 
 
 
@@ -65,6 +66,7 @@ export default function InsideNote() {
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
   const [noteId, setNoteId] = useState("");
   const [success, setSuccess] = useState(false);
+  const [coming, setComing] = useState("");
 
   useEffect(() => {
     if (receivedNote) {
@@ -127,10 +129,11 @@ export default function InsideNote() {
     if (!title && links.length == 0 && !description) {
       setError("Empty note can't save!");
       setLoading(false);
+      setTimeout(() => setError(""), 3000);
     }
     else {
       try {
-        const response = await fetch(`http://localhost:5000/api/updateNote/${noteId}`, {
+        const response = await fetch(`${baseURL}/api/updateNote/${noteId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
@@ -158,7 +161,7 @@ export default function InsideNote() {
     setError("");
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/deleteNote/${noteId}`, {
+      const response = await fetch(`${baseURL}/api/deleteNote/${noteId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -178,6 +181,13 @@ export default function InsideNote() {
       setError(error.message);
     }
   }
+
+
+  const handleUpComing = () => {
+    setComing("Up Coming Feature!!");
+    setTimeout(() => setComing(""), 3000);
+  }
+
 
 
   const handleColorCode = (color: string) => {
@@ -299,6 +309,7 @@ export default function InsideNote() {
 
             <div>
               <Button
+                onClick={handleUpComing}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
                 endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
@@ -308,6 +319,7 @@ export default function InsideNote() {
 
             <div>
               <Button
+                onClick={handleUpComing}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
                 endIcon={<LandscapeIcon className="text-green-400"></LandscapeIcon>}>
@@ -335,6 +347,9 @@ export default function InsideNote() {
           </div>
         </nav>
 
+
+
+        {coming && <Alert severity="warning">{coming}</Alert>}
 
 
 
@@ -382,10 +397,6 @@ export default function InsideNote() {
 
           {/* LINK SECTION */}
           <section className='my-2'>
-            <div className='flex items-center px-2 justify-end'>
-              <button onClick={() => handleOpen({ link: null, index: -1 })}><InsertLinkIcon className='text-white cursor-pointer'></InsertLinkIcon></button>
-            </div>
-
             {
               links.map((link, index) => (
                 <div className='flex items-center bg-black/5' key={index}>

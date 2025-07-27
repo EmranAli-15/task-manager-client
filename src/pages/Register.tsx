@@ -2,13 +2,14 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { useMyProvider } from '../contextApi/ContextApi';
 import { Alert, Button } from '@mui/material';
+import { baseURL } from '../utils/baseURL';
 
 export default function Register() {
 
-    const [email, setEmail] = useState("opu@gmail.com");
-    const [password, setPassword] = useState("123");
-    const [name, setName] = useState("opu");
-    const [confirmPassword, setConfirmPassword] = useState("123");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const { setLoading: providerLoading } = useMyProvider();
@@ -28,7 +29,7 @@ export default function Register() {
 
 
         try {
-            const response = await fetch('http://localhost:5000/api/createUser', {
+            const response = await fetch(`${baseURL}/api/createUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -80,7 +81,7 @@ export default function Register() {
                                 required
                                 type="text"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
-                                placeholder="your@gmail.com"
+                                placeholder="example@gmail.com"
                             />
                         </div>
 
@@ -92,7 +93,7 @@ export default function Register() {
                                 required
                                 type="email"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#1976d2] focus:border-[#1976d2] outline-none transition-all"
-                                placeholder="your@gmail.com"
+                                placeholder="example@gmail.com"
                             />
                         </div>
 

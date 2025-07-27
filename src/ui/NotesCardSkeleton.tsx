@@ -9,7 +9,7 @@ export default function NotesCardSkeleton() {
                         className='text-white bg-slate-800 rounded-[30px] noteCardShadow h-60 animate-pulse'>
                         <div className='bg-slate-700 p-4 rounded-t-[20px] flex items-center justify-between'>
                             <div>
-                                <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'></p>
+                                <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'>{item}</p>
                                 <p className='text-slate-800 bg-slate-800 rounded w-20 h-2 my-1'></p>
                                 <p className='text-slate-800 bg-slate-800 rounded w-32 h-2'></p>
                             </div>
