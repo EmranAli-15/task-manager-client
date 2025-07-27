@@ -81,8 +81,8 @@ export default function Notes() {
                                     notes.map((note: TNote) => {
                                         const title = note.title ?? '';
                                         const details = note.details ?? '';
-                                        const headerColor = note.color ? note.color.header : '#314158';
-                                        const bodyColor = note.color ? note.color.body : '#1d293d';
+                                        const headerColor = note.color ? note.color?.header : '#314158';
+                                        const bodyColor = note.color ? note.color?.body : '#1d293d';
                                         return <div
                                             onClick={() => sendingDataInsideComponent(note)}
                                             key={note._id}
@@ -93,7 +93,7 @@ export default function Notes() {
                                                 className="p-4 rounded-t-[20px] flex items-center justify-between">
                                                 <div>
                                                     <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'></p>
-                                                    <p className='text-slate-800 bg-slate-800 rounded w-10 h-2 my-1'></p>
+                                                    <p className='text-slate-800 bg-slate-800 rounded w-16 h-2 my-1'></p>
                                                     <p className='text-slate-800 bg-slate-800 rounded w-32 h-2'></p>
                                                 </div>
                                                 <div>

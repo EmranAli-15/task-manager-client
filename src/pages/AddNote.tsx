@@ -81,7 +81,6 @@ export default function AddNote() {
   }
 
 
-
   const handleColorCode = (color: string) => {
     if(color == 'yellow'){
       setColor({header:"#ffdf20", body:"#fff085"})
@@ -121,6 +120,7 @@ export default function AddNote() {
     if (!title && links.length == 0 && !description) {
       setError("Empty note can't save!");
       setLoading(false);
+      setTimeout(() => setError(""), 3000);
     }
     else {
       try {
@@ -201,8 +201,8 @@ export default function AddNote() {
               onClick={handleUpload}
               variant="outlined"
               className='text-slate-400! normal-case!'
-              endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
-              Save
+              endIcon={<OnlinePredictionIcon className="text-red-600 animate-ping"></OnlinePredictionIcon>}>
+              <p className="animate-bounce">Save</p>
             </Button>
           </div>
 
