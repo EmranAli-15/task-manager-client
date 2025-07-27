@@ -11,7 +11,7 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import HomeIcon from '@mui/icons-material/Home';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router'
 import Container from '../components/Container';
 import { useMyProvider } from '../contextApi/ContextApi';
@@ -158,6 +158,11 @@ export default function AddNote() {
     setTimeout(() => setComing(""), 3000);
   }
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [user.id]);
+
   return (
     <Container>
       <div>
@@ -167,13 +172,11 @@ export default function AddNote() {
           </Box>
         }
       </div>
-      {error && <Alert severity="error">{error}</Alert>}
 
 
 
 
-
-      <nav className='pt-2 flex items-center gap-x-5'>
+      <nav className='pt-1 flex items-center gap-x-5'>
         <div className="relative hidden md:block -mt-4">
           <Button
             className="bg-[#252525]! text-slate-300!"
@@ -275,6 +278,8 @@ export default function AddNote() {
         </div>
       </nav>
 
+
+      {error && <Alert severity="error">{error}</Alert>}
       {coming && <Alert severity="warning">{coming}</Alert>}
 
 
@@ -317,7 +322,7 @@ export default function AddNote() {
             value={title}
             placeholder='Title'
             type="text"
-            className='w-full outline-none text-white text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
+            className='w-full outline-none text-white text-2xl h-10 mb-2 font-semibold border-b border-gray-500'
           />
         </section>
 

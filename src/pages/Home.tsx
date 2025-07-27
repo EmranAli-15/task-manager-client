@@ -49,33 +49,15 @@ export default function Home() {
 
     useEffect(() => {
         handleFetchData();
+        window.scrollTo(0, 0);
     }, [user.id])
 
 
     return (
         <Container>
-            <div className='flex flex-col gap-x-5 pt-2'>
+            <div>
 
-
-                {/* <div className='flex items-center justify-center'>
-                    <Paper
-                        className='bg-transparent! border border-[#1976d2ad] h-10'
-                        component="form"
-                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-                    >
-                        <InputBase
-                            className='text-white!'
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Search Your Notes"
-                            inputProps={{ 'aria-label': 'search your notes' }}
-                        />
-                        <IconButton className='text-white!' type="button" sx={{ p: '10px' }} aria-label="search">
-                            <SearchIcon />
-                        </IconButton>
-                    </Paper>
-                </div> */}
-
-                <div className='flex items-center justify-between mt-2'>
+                <div className='flex items-center justify-between pt-1 mb-3'>
                     <div>
                         <Button onClick={handleLogOut} variant='outlined' className='text-slate-400! normal-case!' startIcon={<LogoutIcon className='rotate-180'></LogoutIcon>}>Log Out</Button>
                     </div>
@@ -87,7 +69,7 @@ export default function Home() {
                 </div>
 
 
-                <div className='mt-5'>
+                <div>
                     {
                         loading ? <HomeCardSkeleton></HomeCardSkeleton> :
                             error && !loading ? <Alert severity="error">{error}</Alert> :
@@ -96,7 +78,7 @@ export default function Home() {
                                         {
                                             categories.map((item: TCard, index: any) => {
                                                 return (
-                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 mt-5 relative' key={index}>
+                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 relative' key={index}>
                                                         <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
                                                         <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
                                                     </Link>

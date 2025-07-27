@@ -60,6 +60,7 @@ export default function Notes() {
 
     useEffect(() => {
         handleFetchData();
+        window.scrollTo(0, 0);
     }, [user?.id, id]);
 
 
@@ -69,9 +70,9 @@ export default function Notes() {
 
     return (
         <Container>
-            <div className='py-5 overflow-auto h-screen'>
+            <div className='overflow-auto h-screen'>
 
-                <nav className='pb-5'>
+                <nav className='pt-1 mb-3'>
                     <div className='flex items-center justify-between'>
                         <Button
                             onClick={() => navigate(-1)}
@@ -106,9 +107,9 @@ export default function Notes() {
                                                     style={{ backgroundColor: headerColor }}
                                                     className="p-4 rounded-t-[20px] flex items-center justify-between">
                                                     <div>
-                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-10 h-2'></p>
-                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-16 h-2 my-1'></p>
-                                                        <p style={{backgroundColor: bodyColor}} className='rounded w-32 h-2'></p>
+                                                        <p style={{ backgroundColor: bodyColor }} className='rounded w-10 h-2'></p>
+                                                        <p style={{ backgroundColor: bodyColor }} className='rounded w-16 h-2 my-1'></p>
+                                                        <p style={{ backgroundColor: bodyColor }} className='rounded w-32 h-2'></p>
                                                         {/* <p className='bg-slate-800 rounded w-10 h-2'></p>
                                                         <p className='bg-slate-800 rounded w-16 h-2 my-1'></p>
                                                         <p className='bg-slate-800 rounded w-32 h-2'></p> */}

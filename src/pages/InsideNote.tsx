@@ -44,7 +44,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: window.innerWidth < 500 ? window.innerWidth - 20 : 400,
   bgcolor: '#252525',
   boxShadow: 24,
   p: 2,
@@ -79,6 +79,7 @@ export default function InsideNote() {
         setColor(receivedNote.color)
       }
     }
+    window.scrollTo(0, 0);
   }, [receivedNote, user.id])
 
 
@@ -222,7 +223,7 @@ export default function InsideNote() {
 
   return (
     <Container>
-      <div className='overflow-auto'>
+      <div className='overflow-auto pt-1'>
         <div>
           {
             loading && <Box sx={{ width: '100%' }}>
@@ -235,7 +236,7 @@ export default function InsideNote() {
 
 
 
-        <nav className='pt-2 flex items-center gap-x-5'>
+        <nav className='flex items-center gap-x-5'>
           <div className="relative hidden md:block -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
@@ -353,7 +354,7 @@ export default function InsideNote() {
 
 
 
-        <div className='text-white my-2 p-3 rounded'>
+        <div className='text-white my-2 mt-3 px-2 rounded'>
           <Modal
             keepMounted
             open={open}
