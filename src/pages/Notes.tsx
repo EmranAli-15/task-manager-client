@@ -42,7 +42,12 @@ export default function Notes() {
                 setNotes(data.data)
                 setLoading(false);
             })
-    }, [user.id])
+    }, [user.id]);
+
+
+    const sendingDataInsideComponent = (data: any) => {
+        navigate('/inside-note', { state: data });
+    }
 
     return (
         <Container>
@@ -73,8 +78,9 @@ export default function Notes() {
                                         const title = note.title ?? '';
                                         const details = note.details ?? '';
                                         return <div
+                                            onClick={() => sendingDataInsideComponent(note)}
                                             key={note._id}
-                                            className='text-white bg-slate-800 rounded-[30px] noteCardShadow h-60'>
+                                            className='text-white bg-slate-800 rounded-[30px] noteCardShadow h-60 cursor-pointer'>
                                             <div className='bg-slate-700 p-4 rounded-t-[20px] flex items-center justify-between'>
                                                 <div>
                                                     <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'></p>

@@ -40,9 +40,11 @@ const style = {
 };
 
 
-export default function AddNote() {
+export default function InsideNote() {
   const { user } = useMyProvider();
   const navigate = useNavigate();
+  const location = useLocation();
+  const receivedNote: TNote = location.state;
 
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -50,6 +52,15 @@ export default function AddNote() {
   const [links, setLinks] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
+
+  useEffect(() => {
+    if (receivedNote) {
+      setTitle(receivedNote.title);
+      setDescription(receivedNote.details);
+      setLinks(receivedNote.links ?? []);
+      setCategoryId(receivedNote.categoryId);
+    }
+  }, [receivedNote])
 
 
   const [open, setOpen] = useState(false);

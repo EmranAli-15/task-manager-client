@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
-import Inside from "../pages/Inside";
+import InsideNote from "../pages/InsideNote";
 import AddNote from "../pages/AddNote";
 import Protected, { Locked } from "../protectedRoutes/Protected";
 import Register from "../pages/Register";
@@ -29,8 +29,8 @@ const Router = createBrowserRouter([
         element: <Protected><Notes></Notes></Protected>,
     },
     {
-        path: "/inside",
-        element: <Protected><Inside></Inside></Protected>,
+        path: "/inside-note",
+        element: <Protected><InsideNote></InsideNote></Protected>,
     }
 ]);
 
