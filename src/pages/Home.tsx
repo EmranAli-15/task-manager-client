@@ -39,7 +39,7 @@ export default function Home() {
             <div className='flex flex-col gap-x-5 pt-2'>
 
 
-                <div className='flex items-center justify-center'>
+                {/* <div className='flex items-center justify-center'>
                     <Paper
                         className='bg-transparent! border border-[#1976d2ad] h-10'
                         component="form"
@@ -55,9 +55,9 @@ export default function Home() {
                             <SearchIcon />
                         </IconButton>
                     </Paper>
-                </div>
+                </div> */}
 
-                <div className='flex items-center justify-center mt-5'>
+                <div className='flex items-center justify-center mt-2'>
                     <div className='flex items-center gap-x-2'>
                         <Link to="add-note">
                             <Button variant="outlined" className='text-slate-400!' endIcon={<AddBoxIcon></AddBoxIcon>}>Add Note</Button>

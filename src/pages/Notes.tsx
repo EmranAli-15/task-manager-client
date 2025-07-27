@@ -16,6 +16,10 @@ type TNote = {
     _id: string;
     title: string;
     details: string;
+    color: {
+        header: string;
+        body: string;
+    }
 }
 
 export default function Notes() {
@@ -77,14 +81,19 @@ export default function Notes() {
                                     notes.map((note: TNote) => {
                                         const title = note.title ?? '';
                                         const details = note.details ?? '';
+                                        const headerColor = note.color ? note.color.header : '#314158';
+                                        const bodyColor = note.color ? note.color.body : '#1d293d';
                                         return <div
                                             onClick={() => sendingDataInsideComponent(note)}
                                             key={note._id}
-                                            className='text-white bg-slate-800 rounded-[30px] noteCardShadow h-60 cursor-pointer'>
-                                            <div className='bg-slate-700 p-4 rounded-t-[20px] flex items-center justify-between'>
+                                            style={{ backgroundColor: bodyColor }}
+                                            className="text-white rounded-[30px] noteCardShadow h-60 cursor-pointer">
+                                            <div
+                                                style={{ backgroundColor: headerColor }}
+                                                className="p-4 rounded-t-[20px] flex items-center justify-between">
                                                 <div>
                                                     <p className='text-slate-800 bg-slate-800 rounded w-10 h-2'></p>
-                                                    <p className='text-slate-800 bg-slate-800 rounded w-20 h-2 my-1'></p>
+                                                    <p className='text-slate-800 bg-slate-800 rounded w-10 h-2 my-1'></p>
                                                     <p className='text-slate-800 bg-slate-800 rounded w-32 h-2'></p>
                                                 </div>
                                                 <div>
@@ -92,7 +101,7 @@ export default function Notes() {
                                                 </div>
                                             </div>
                                             <div className='p-4'>
-                                                <p className='text-slate-300 font-medium text-lg line-clamp-1'>
+                                                <p className='text-slate-400 font-medium text-lg line-clamp-1'>
                                                     {title}
                                                 </p>
                                                 <p className='mt-5 text-slate-400 line-clamp-3'>

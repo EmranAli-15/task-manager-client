@@ -21,6 +21,7 @@ type TNote = {
   links: string[];
   userId: string;
   categoryId: string;
+  _id: string;
 }
 
 
@@ -52,6 +53,8 @@ export default function InsideNote() {
   const [links, setLinks] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
+  const [noteId, setNoteId] = useState("");
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (receivedNote) {
@@ -59,8 +62,9 @@ export default function InsideNote() {
       setDescription(receivedNote.details);
       setLinks(receivedNote.links ?? []);
       setCategoryId(receivedNote.categoryId);
+      setNoteId(receivedNote._id);
     }
-  }, [receivedNote])
+  }, [receivedNote, user.id])
 
 
   const [open, setOpen] = useState(false);
@@ -101,8 +105,7 @@ export default function InsideNote() {
   }
 
 
-
-  const handleUpload = async () => {
+  const handleUpdate = async () => {
     setError("");
     setLoading(true);
     const data = { title, links, details: description, categoryId, userId: user.id };
@@ -113,8 +116,8 @@ export default function InsideNote() {
     }
     else {
       try {
-        const response = await fetch('http://localhost:5000/api/createNote', {
-          method: 'POST',
+        const response = await fetch(`http://localhost:5000/api/updateNote/${noteId}`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -124,13 +127,11 @@ export default function InsideNote() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.message || 'Note upload failed!');
+          throw new Error(result.message || 'Note update failed!');
         }
 
         setLoading(false);
-        setTitle("");
-        setDescription("");
-
+        setSuccess(true);
       } catch (error: any) {
         setLoading(false);
         setError(error.message);
@@ -140,117 +141,119 @@ export default function InsideNote() {
 
   return (
     <Container>
-      <div>
-        {
-          loading && <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
-        }
-      </div>
-      {error && <Alert severity="error">{error}</Alert>}
-      <nav className='pt-2'>
-        <div className='flex items-center justify-between'>
-          <Button
-            onClick={() => navigate(-1)}
-            variant="outlined"
-            className='text-slate-400! h-9'
-            startIcon={<ArrowBackIcon></ArrowBackIcon>}>
-          </Button>
-
-          <Button>
-            <select onChange={(e) => setCategoryId(e.target.value)} className='border rounded-sm border-[#295480] text-gray-400 outline-0 h-9'>
-              <option value="687231b05282890fad825d85">Work space</option>
-              <option value="687231b05282890fad825d83">Home work</option>
-              <option value="687231b05282890fad825d84">Idea</option>
-              <option value="687231b05282890fad825d87">Hobby</option>
-              <option value="687231b05282890fad825d82">Education</option>
-              <option value="687231b05282890fad825d86">Business</option>
-            </select>
-          </Button>
-
-          <Button
-            onClick={handleUpload}
-            variant="outlined"
-            className='text-slate-400! normal-case!'
-            endIcon={<OnlinePredictionIcon></OnlinePredictionIcon>}>
-            Save
-          </Button>
-        </div>
-      </nav>
-
-      <div className='text-white my-2 p-3 rounded'>
-        <Modal
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
-          <Box sx={style}>
-            <div className='flex items-center justify-end'>
-              <Button
-                onClick={handleClose}>
-                <CheckBoxIcon></CheckBoxIcon>
-              </Button>
-              <Button
-                onClick={() => handleDeleteLink(linkUpdate)}>
-                <DeleteIcon className='text-red-500'></DeleteIcon>
-              </Button>
-            </div>
-            <input
-              type="text"
-              onChange={(e) => setLinkInsert(e.target.value)}
-              value={linkInsert}
-              className="w-full px-4 py-2 border border-gray-500 rounded-md text-gray-300 outline-none transition-all"
-              placeholder="https://example.com"
-            />
-          </Box>
-        </Modal>
-
-
-        {/* TITLE SECTION */}
-        <section>
-          <input
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
-            placeholder='Title'
-            type="text"
-            className='w-full outline-none text-white text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
-          />
-        </section>
-
-
-        {/* LINK SECTION */}
-        <section className='my-2'>
-          <div className='flex items-center px-2 justify-end'>
-            <button onClick={() => handleOpen({ link: null, index: -1 })}><InsertLinkIcon className='text-white cursor-pointer'></InsertLinkIcon></button>
-          </div>
-
+      <div className='overflow-auto'>
+        <div>
           {
-            links.map((link, index) => (
-              <div className='flex items-center bg-black/5' key={index}>
-                <button
-                  onClick={() => handleOpen({ link, index })}
-                  className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
-                  <InsertLinkIcon></InsertLinkIcon>
-                </button>
-                <p className='border-b p-1 w-full font-thin text-gray-500'>{link}</p>
-              </div>
-            ))
+            loading && <Box sx={{ width: '100%' }}>
+              <LinearProgress />
+            </Box>
           }
-        </section>
+        </div>
+        {error && <Alert severity="error">{error}</Alert>}
+        {success && <Alert severity="success">Note updated.</Alert>}
+        <nav className='pt-2'>
+          <div className='flex items-center justify-between'>
+            <Button
+              onClick={() => navigate(-1)}
+              variant="outlined"
+              className='text-slate-400! h-9'
+              startIcon={<ArrowBackIcon></ArrowBackIcon>}>
+            </Button>
+
+            <Button>
+              <select onChange={(e) => setCategoryId(e.target.value)} className='border rounded-sm border-[#295480] text-gray-400 outline-0 h-9'>
+                <option value="687231b05282890fad825d85">Work space</option>
+                <option value="687231b05282890fad825d83">Home work</option>
+                <option value="687231b05282890fad825d84">Idea</option>
+                <option value="687231b05282890fad825d87">Hobby</option>
+                <option value="687231b05282890fad825d82">Education</option>
+                <option value="687231b05282890fad825d86">Business</option>
+              </select>
+            </Button>
+
+            <Button
+              onClick={handleUpdate}
+              variant="outlined"
+              className='text-slate-400! normal-case!'
+              endIcon={<OnlinePredictionIcon></OnlinePredictionIcon>}>
+              Save
+            </Button>
+          </div>
+        </nav>
+
+        <div className='text-white my-2 p-3 rounded'>
+          <Modal
+            keepMounted
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="keep-mounted-modal-title"
+            aria-describedby="keep-mounted-modal-description"
+          >
+            <Box sx={style}>
+              <div className='flex items-center justify-end'>
+                <Button
+                  onClick={handleClose}>
+                  <CheckBoxIcon></CheckBoxIcon>
+                </Button>
+                <Button
+                  onClick={() => handleDeleteLink(linkUpdate)}>
+                  <DeleteIcon className='text-red-500'></DeleteIcon>
+                </Button>
+              </div>
+              <input
+                type="text"
+                onChange={(e) => setLinkInsert(e.target.value)}
+                value={linkInsert}
+                className="w-full px-4 py-2 border border-gray-500 rounded-md text-gray-300 outline-none transition-all"
+                placeholder="https://example.com"
+              />
+            </Box>
+          </Modal>
 
 
-        {/* TEXTAREA SECTION */}
-        <textarea
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          autoFocus
-          placeholder='Note'
-          className='w-full h-screen outline-none mt-3'>
-        </textarea>
+          {/* TITLE SECTION */}
+          <section>
+            <input
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+              placeholder='Title'
+              type="text"
+              className='w-full outline-none text-white text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
+            />
+          </section>
+
+
+          {/* LINK SECTION */}
+          <section className='my-2'>
+            <div className='flex items-center px-2 justify-end'>
+              <button onClick={() => handleOpen({ link: null, index: -1 })}><InsertLinkIcon className='text-white cursor-pointer'></InsertLinkIcon></button>
+            </div>
+
+            {
+              links.map((link, index) => (
+                <div className='flex items-center bg-black/5' key={index}>
+                  <button
+                    onClick={() => handleOpen({ link, index })}
+                    className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
+                    <InsertLinkIcon></InsertLinkIcon>
+                  </button>
+                  <p className='border-b p-1 w-full font-thin text-gray-500'>{link}</p>
+                </div>
+              ))
+            }
+          </section>
+
+
+          {/* TEXTAREA SECTION */}
+          <textarea
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
+            autoFocus
+            placeholder='Note'
+            className='w-full h-screen outline-none mt-3'>
+          </textarea>
+        </div>
       </div>
-
     </Container>
   )
 }
