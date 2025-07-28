@@ -7,7 +7,6 @@ import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
 import HomeIcon from '@mui/icons-material/Home';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 
@@ -16,6 +15,9 @@ import { useNavigate } from 'react-router'
 import Container from '../components/Container';
 import { useMyProvider } from '../contextApi/ContextApi';
 import { baseURL } from "../utils/baseURL";
+import Color from "../components/navs/Color";
+import Category from "../components/navs/Category";
+import Links from "../components/navs/Links";
 
 
 const style = {
@@ -83,25 +85,6 @@ export default function AddNote() {
   }
 
 
-  const handleColorCode = (color: string) => {
-    if (color == 'yellow') {
-      setColor({ header: "#ffdf20", body: "#fff085" })
-    }
-    else if (color == 'green') {
-      setColor({ header: "#05df72", body: "#7bf1a8" })
-    }
-    else if (color == 'red') {
-      setColor({ header: "#ff6467", body: "#ffa2a2" })
-    }
-    else if (color == 'white') {
-      setColor({ header: "#fff", body: "#e2e8f0" })
-    }
-    else {
-      setColor({ header: "#314158", body: "#1d293d" })
-    }
-    setOpenColor(false);
-  }
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -152,7 +135,6 @@ export default function AddNote() {
   }
 
 
-
   const handleUpComing = () => {
     setComing("Up Coming Feature!!");
     setTimeout(() => setComing(""), 3000);
@@ -196,18 +178,7 @@ export default function AddNote() {
             </Button>
           </div>
 
-          <div>
-            <Button variant="outlined">
-              <select onChange={(e) => setCategoryId(e.target.value)} className='cursor-pointer outline-0 text-gray-400 h-6'>
-                <option value="687231b05282890fad825d85">Work space</option>
-                <option value="687231b05282890fad825d83">Home work</option>
-                <option value="687231b05282890fad825d84">Idea</option>
-                <option value="687231b05282890fad825d87">Hobby</option>
-                <option value="687231b05282890fad825d82">Education</option>
-                <option value="687231b05282890fad825d86">Business</option>
-              </select>
-            </Button>
-          </div>
+          <Category setCategoryId={setCategoryId}></Category>
 
           <div>
             <Button
@@ -219,34 +190,9 @@ export default function AddNote() {
             </Button>
           </div>
 
-          <div>
-            <Button
-              onClick={() => handleOpen({ link: null, index: -1 })}
-              variant="outlined"
-              className='text-slate-400! normal-case!'
-              endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
-              Links
-            </Button>
-          </div>
+          <Links links={links} setLinks={setLinks}></Links>
 
-          <div className="relative">
-            <Button
-              onClick={() => setOpenColor(!openColor)}
-              variant="outlined"
-              className='text-slate-400! normal-case!'
-              endIcon={<ColorLensIcon style={{ color: color.header }}></ColorLensIcon>}>
-              Color
-            </Button>
-            {
-              openColor && <div className="top-14 left-1/2 -translate-x-1/2 fixed w-20">
-                <div onClick={() => handleColorCode("yellow")} className="bg-yellow-300 w-full h-7 cursor-pointer"></div>
-                <div onClick={() => handleColorCode("green")} className="bg-green-400 w-full h-7 cursor-pointer"></div>
-                <div onClick={() => handleColorCode("red")} className="bg-red-400 w-full h-7 cursor-pointer"></div>
-                <div onClick={() => handleColorCode("white")} className="bg-white w-full h-7 cursor-pointer"></div>
-                <div onClick={() => handleColorCode("slate")} className="bg-slate-700 w-full h-7 cursor-pointer"></div>
-              </div>
-            }
-          </div>
+          <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
 
           <div>
             <Button
@@ -286,34 +232,6 @@ export default function AddNote() {
 
 
       <div className='text-white my-2 p-3 rounded'>
-        <Modal
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
-          <Box sx={style}>
-            <div className='flex items-center justify-end'>
-              <Button
-                onClick={handleClose}>
-                <CheckBoxIcon></CheckBoxIcon>
-              </Button>
-              <Button
-                onClick={() => handleDeleteLink(linkUpdate)}>
-                <DeleteIcon className='text-red-500'></DeleteIcon>
-              </Button>
-            </div>
-            <input
-              type="text"
-              onChange={(e) => setLinkInsert(e.target.value)}
-              value={linkInsert}
-              className="w-full px-4 py-2 border border-gray-500 rounded-md text-gray-300 outline-none transition-all"
-              placeholder="https://example.com"
-            />
-          </Box>
-        </Modal>
-
 
         {/* TITLE SECTION */}
         <section>
