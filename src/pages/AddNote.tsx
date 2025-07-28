@@ -1,8 +1,6 @@
 import "../App.css";
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import { Alert, Box, Button, LinearProgress, Modal } from '@mui/material'
+import { Alert, Box, Button, LinearProgress } from '@mui/material'
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
@@ -17,19 +15,7 @@ import { useMyProvider } from '../contextApi/ContextApi';
 import { baseURL } from "../utils/baseURL";
 import Color from "../components/navs/Color";
 import Category from "../components/navs/Category";
-import Links from "../components/navs/Links";
-
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: '#252525',
-  boxShadow: 24,
-  p: 2,
-};
+import LinkInputs from "../components/navs/Links";
 
 
 export default function AddNote() {
@@ -45,44 +31,7 @@ export default function AddNote() {
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
   const [coming, setComing] = useState("");
 
-
-  const [open, setOpen] = useState(false);
-  const [linkInsert, setLinkInsert] = useState("");
-  const [linkUpdate, setLinkUpdate] = useState(-1);
   const [openColor, setOpenColor] = useState(false);
-
-
-  const handleOpen = ({ link, index }: { link: string | null, index: number }) => {
-    if (link) {
-      setLinkInsert(link)
-      setLinkUpdate(index);
-    }
-    setOpen(true);
-  }
-  const handleClose = () => {
-    if (linkUpdate >= 0 && linkInsert) {
-      const copiedLinks = [...links]
-      copiedLinks.splice(linkUpdate, 1, linkInsert);
-      setLinks(copiedLinks);
-      setLinkUpdate(-1);
-    }
-    else if (linkInsert) {
-      let updatedLinks = [...links, linkInsert];
-      setLinks(updatedLinks);
-    }
-    setOpen(false);
-    setLinkInsert("");
-  };
-
-
-
-  const handleDeleteLink = (index: number) => {
-    const copiedLinks = [...links]
-    copiedLinks.splice(index, 1);
-    setLinks(copiedLinks);
-    setLinkInsert("");
-    setOpen(false);
-  }
 
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -95,6 +44,10 @@ export default function AddNote() {
     }
   };
 
+
+  const addLink = () => {
+    setLinks(prev => [...prev, ""]);
+  };
 
 
   const handleUpload = async () => {
@@ -190,9 +143,19 @@ export default function AddNote() {
             </Button>
           </div>
 
-          <Links links={links} setLinks={setLinks}></Links>
-
           <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+
+
+          <div>
+            <Button
+              onClick={addLink}
+              variant="outlined"
+              className='text-slate-400! normal-case!'
+              endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
+              Link
+            </Button>
+          </div>
+
 
           <div>
             <Button
@@ -246,20 +209,7 @@ export default function AddNote() {
 
 
         {/* LINKS SECTION */}
-        <section className='my-2'>
-          {
-            links.map((link, index) => (
-              <div className='flex items-center bg-black/5' key={index}>
-                <button
-                  onClick={() => handleOpen({ link, index })}
-                  className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white -ml-2'>
-                  <InsertLinkIcon></InsertLinkIcon>
-                </button>
-                <p className='border-b p-1 w-full font-thin text-gray-500'>{link}</p>
-              </div>
-            ))
-          }
-        </section>
+        <LinkInputs links={links} setLinks={setLinks} />
 
 
         {/* TEXTAREA SECTION */}
