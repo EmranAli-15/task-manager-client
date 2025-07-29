@@ -1,14 +1,13 @@
+import "../App.css";
 import DeleteIcon from '@mui/icons-material/Delete';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import { Alert, Box, Button, LinearProgress, Modal } from '@mui/material'
+import { Alert, Box, Button, LinearProgress } from '@mui/material'
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LandscapeIcon from '@mui/icons-material/Landscape';
-import "../App.css";
 
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router'
@@ -17,10 +16,7 @@ import { useMyProvider } from '../contextApi/ContextApi';
 import { baseURL } from '../utils/baseURL';
 import Color from '../components/navs/Color';
 import Category from '../components/navs/Category';
-
-
-
-
+import LinkInputs from '../components/navs/Links';
 
 type TNote = {
   title: string;
@@ -35,23 +31,6 @@ type TNote = {
   };
 }
 
-
-
-
-
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: window.innerWidth < 500 ? window.innerWidth - 20 : 400,
-  bgcolor: '#252525',
-  boxShadow: 24,
-  p: 2,
-};
-
-
 export default function InsideNote() {
   const { user } = useMyProvider();
   const navigate = useNavigate();
@@ -62,6 +41,7 @@ export default function InsideNote() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [links, setLinks] = useState<string[]>([]);
+  const [openColor, setOpenColor] = useState(false);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
@@ -84,44 +64,11 @@ export default function InsideNote() {
   }, [receivedNote, user.id])
 
 
-  const [open, setOpen] = useState(false);
-  const [linkInsert, setLinkInsert] = useState("");
-  const [linkUpdate, setLinkUpdate] = useState(-1);
-  const [openColor, setOpenColor] = useState(false);
 
 
-  const handleOpen = ({ link, index }: { link: string | null, index: number }) => {
-    if (link) {
-      setLinkInsert(link)
-      setLinkUpdate(index);
-    }
-    setOpen(true);
-  }
-  const handleClose = () => {
-    if (linkUpdate >= 0 && linkInsert) {
-      const copiedLinks = [...links]
-      copiedLinks.splice(linkUpdate, 1, linkInsert);
-      setLinks(copiedLinks);
-      setLinkUpdate(-1);
-    }
-    else if (linkInsert) {
-      let updatedLinks = [...links, linkInsert];
-      setLinks(updatedLinks);
-    }
-    setOpen(false);
-    setLinkInsert("");
+  const addLink = () => {
+    setLinks(prev => [...prev, ""]);
   };
-
-
-
-  const handleDeleteLink = (index: number) => {
-    const copiedLinks = [...links]
-    copiedLinks.splice(index, 1);
-    setLinks(copiedLinks);
-    setLinkInsert("");
-    setOpen(false);
-  }
-
 
   const handleUpdate = async () => {
     setError("");
@@ -243,18 +190,18 @@ export default function InsideNote() {
                 onClick={handleUpdate}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
-                endIcon={<OnlinePredictionIcon className="text-red-600 animate-ping"></OnlinePredictionIcon>}>
-                <p className="animate-bounce">Save</p>
+                endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
+                <p>Save</p>
               </Button>
             </div>
 
             <div>
               <Button
-                onClick={() => handleOpen({ link: null, index: -1 })}
+                onClick={addLink}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
                 endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
-                Links
+                Link
               </Button>
             </div>
 
@@ -307,62 +254,23 @@ export default function InsideNote() {
 
 
         <div className='text-white my-2 mt-3 px-2 rounded'>
-          <Modal
-            keepMounted
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="keep-mounted-modal-title"
-            aria-describedby="keep-mounted-modal-description"
-          >
-            <Box sx={style}>
-              <div className='flex items-center justify-end'>
-                <Button
-                  onClick={handleClose}>
-                  <CheckBoxIcon></CheckBoxIcon>
-                </Button>
-                <Button
-                  onClick={() => handleDeleteLink(linkUpdate)}>
-                  <DeleteIcon className='text-red-500'></DeleteIcon>
-                </Button>
-              </div>
-              <input
-                type="text"
-                onChange={(e) => setLinkInsert(e.target.value)}
-                value={linkInsert}
-                className="w-full px-4 py-2 border border-gray-500 rounded-md text-gray-300 outline-none transition-all"
-                placeholder="https://example.com"
-              />
-            </Box>
-          </Modal>
 
 
           {/* TITLE SECTION */}
           <section>
             <input
+              style={{ color: color.header }}
               onChange={(e) => setTitle(e.target.value)}
               value={title}
               placeholder='Title'
               type="text"
-              className='w-full outline-none text-white text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
+              className='w-full outline-none text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
             />
           </section>
 
 
           {/* LINK SECTION */}
-          <section className='my-2'>
-            {
-              links.map((link, index) => (
-                <div className='flex items-center bg-black/5' key={index}>
-                  <button
-                    onClick={() => handleOpen({ link, index })}
-                    className='w-10 cursor-pointer hover:bg-[#1976d2] hover:text-white'>
-                    <InsertLinkIcon></InsertLinkIcon>
-                  </button>
-                  <p className='border-b p-1 w-full font-thin text-gray-500'>{link}</p>
-                </div>
-              ))
-            }
-          </section>
+          <LinkInputs links={links} setLinks={setLinks} />
 
 
           {/* TEXTAREA SECTION */}

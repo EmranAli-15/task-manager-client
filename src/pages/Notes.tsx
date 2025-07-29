@@ -119,7 +119,7 @@ export default function Notes() {
                                                     </div>
                                                 </div>
                                                 <div className='p-4'>
-                                                    <p className='text-slate-400 font-medium text-lg line-clamp-1'>
+                                                    <p className='text-black font-bold text-lg line-clamp-1'>
                                                         {title}
                                                     </p>
                                                     <p className='mt-5 text-slate-400 line-clamp-3'>
