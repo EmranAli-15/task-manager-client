@@ -31,10 +31,23 @@ type TNote = {
   };
 }
 
+let autoTitle = "";
+let autoColor = {};
+let autoNoteId = "";
+let autoCategoryId = "";
+let autoDescription = "";
+let autoLists: string[] = [];
+
+let initialAutoTitle = "";
+let initialAutoColor = {};
+let initialAutoCategoryId = "";
+let initialAutoDescription = "";
+let initialAutoLists: string[] = [];
+
 export default function InsideNote() {
-  const { user } = useMyProvider();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useMyProvider();
   const receivedNote: TNote = location.state;
 
   const [error, setError] = useState("");
@@ -49,22 +62,6 @@ export default function InsideNote() {
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
-
-  useEffect(() => {
-    if (receivedNote) {
-      setTitle(receivedNote.title);
-      setLists(receivedNote.lists ?? []);
-      setDescription(receivedNote.details);
-      setCategoryId(receivedNote.categoryId);
-      setNoteId(receivedNote._id);
-      if (receivedNote.color) {
-        setColor(receivedNote.color)
-      }
-    }
-    window.scrollTo(0, 0);
-  }, [receivedNote, user.id])
-
-
 
 
   const addList = () => {
@@ -111,7 +108,6 @@ export default function InsideNote() {
     }
   }
 
-
   const handleDelete = async () => {
     setError("");
     setLoading(true);
@@ -140,12 +136,14 @@ export default function InsideNote() {
     }
   }
 
-
   const handleUpComing = () => {
     setComing("Up Coming Feature!!");
     setTimeout(() => setComing(""), 2000);
   }
 
+  const goBack = () => {
+
+  }
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: 'left' | 'right') => {
@@ -156,6 +154,87 @@ export default function InsideNote() {
       });
     }
   };
+
+
+  // Get note data
+  useEffect(() => {
+    if (receivedNote) {
+      setNoteId(receivedNote._id);
+      setTitle(receivedNote.title);
+      setColor(receivedNote.color);
+      setLists(receivedNote.lists ?? []);
+      setDescription(receivedNote.details);
+      setCategoryId(receivedNote.categoryId);
+
+      autoNoteId = receivedNote._id;
+      autoColor = receivedNote.color;
+      autoTitle = receivedNote.title;
+      autoLists = receivedNote.lists ?? [];
+      autoDescription = receivedNote.details;
+      autoCategoryId = receivedNote.categoryId;
+
+      initialAutoTitle = receivedNote.title;
+      initialAutoColor = receivedNote.color;
+      initialAutoLists = receivedNote.lists ?? [];
+      initialAutoDescription = receivedNote.details;
+      initialAutoCategoryId = receivedNote.categoryId;
+    }
+    window.scrollTo(0, 0);
+  }, [receivedNote, user.id])
+
+  // Get changed data for auto save
+  useEffect(() => {
+    autoTitle = title;
+    autoLists = lists;
+    autoColor = color;
+    autoNoteId = noteId;
+    autoCategoryId = categoryId;
+    autoDescription = description;
+  }, [title, lists, description, categoryId, color, noteId])
+
+
+  // This is for auto save
+  useEffect(() => {
+    return (() => {
+      const data = {
+        userId: user.id,
+        title: autoTitle,
+        lists: autoLists,
+        color: autoColor,
+        details: autoDescription,
+        categoryId: autoCategoryId,
+      };
+
+
+      if (!data.title && data.lists.length === 0 && !data.details) {
+        return;
+      }
+
+      if (
+        autoColor == initialAutoColor &&
+        autoTitle == initialAutoTitle &&
+        autoLists == initialAutoLists &&
+        autoCategoryId == initialAutoCategoryId &&
+        autoDescription == initialAutoDescription
+      ) {
+        return;
+      }
+
+      fetch(`${baseURL}/api/updateNote/${autoNoteId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (!result.success) { }
+        })
+    })
+  }, [])
+
+
 
   return (
     <Container>
@@ -188,7 +267,7 @@ export default function InsideNote() {
           <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
             <div>
               <Button
-                onClick={() => navigate(-1)}
+                onClick={goBack}
                 variant="outlined"
                 className='text-slate-400! h-9 normal-case!'
                 startIcon={<ArrowBackIcon></ArrowBackIcon>}>
@@ -293,7 +372,6 @@ export default function InsideNote() {
           <textarea
             onChange={(e) => setDescription(e.target.value)}
             value={description}
-            autoFocus
             placeholder='Note'
             className='w-full h-screen outline-none mt-5'>
           </textarea>

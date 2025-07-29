@@ -22,6 +22,7 @@ let autoTitle = "";
 let autoLists: string[] = [];
 let autoDescription = "";
 let autoCategoryId = "";
+let autoUserId = "";
 let autoColor = {};
 
 export default function AddNote() {
@@ -38,6 +39,7 @@ export default function AddNote() {
   const [error, setError] = useState("");
   const [coming, setComing] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
   const [openColor, setOpenColor] = useState(false);
 
 
@@ -60,6 +62,7 @@ export default function AddNote() {
 
   const handleUpload = async () => {
     setError("");
+    setSuccess("");
     setLoading(true);
     const data = { title, lists, details: description, categoryId, userId: user.id, color };
 
@@ -85,6 +88,7 @@ export default function AddNote() {
         }
 
         setLoading(false);
+        setSuccess("Note saved!");
         setTitle("");
         setDescription("");
         setLists([]);
@@ -95,6 +99,7 @@ export default function AddNote() {
       } finally {
         setTimeout(() => {
           setError("");
+          setSuccess("")
         }, 2000)
       }
     }
@@ -106,15 +111,17 @@ export default function AddNote() {
     setTimeout(() => setComing(""), 2000);
   }
 
+  // Get changed data for auto save
   useEffect(() => {
     autoTitle = title;
     autoLists = lists;
     autoDescription = description;
     autoCategoryId = categoryId;
+    autoUserId = user.id;
     autoColor = color;
   }, [title, lists, description, categoryId, color])
 
-
+  // This is for auto save
   useEffect(() => {
     return (() => {
       const data = {
@@ -122,7 +129,7 @@ export default function AddNote() {
         lists: autoLists,
         details: autoDescription,
         categoryId: autoCategoryId,
-        userId: user.id,
+        userId: autoUserId,
         color: autoColor
       };
 
@@ -249,6 +256,7 @@ export default function AddNote() {
 
         {error && <Alert severity="error">{error}</Alert>}
         {coming && <Alert severity="warning">{coming}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
 
 
         <div className='text-white my-5'>

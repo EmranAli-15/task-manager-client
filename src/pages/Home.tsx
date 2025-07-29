@@ -69,7 +69,7 @@ export default function Home() {
                 </div>
 
 
-                <div>
+                <div className='px-2 md:px-0'>
                     {
                         loading ? <HomeCardSkeleton></HomeCardSkeleton> :
                             error && !loading ? <Alert severity="error">{error}</Alert> :
