@@ -1,8 +1,8 @@
 import "../App.css";
 import { baseURL } from '../utils/baseURL';
 import { useMyProvider } from '../contextApi/ContextApi';
-import { useLocation, useNavigate } from 'react-router'
 import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { Alert, Box, Button, LinearProgress } from '@mui/material'
 
 import Color from '../components/navs/Color';
@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LandscapeIcon from '@mui/icons-material/Landscape';
+import InsideCardSkeleton from "../ui/InsideCardSkeleton";
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
@@ -45,14 +46,16 @@ let initialAutoDescription = "";
 let initialAutoLists: string[] = [];
 
 export default function InsideNote() {
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useMyProvider();
-  const receivedNote: TNote = location.state;
+  const [data, setData] = useState<TNote | any>({});
 
   const [error, setError] = useState("");
   const [coming, setComing] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [openColor, setOpenColor] = useState(false);
 
@@ -141,10 +144,8 @@ export default function InsideNote() {
     setTimeout(() => setComing(""), 2000);
   }
 
-  const goBack = () => {
 
-  }
-
+  // for navbar scrolling
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -156,41 +157,63 @@ export default function InsideNote() {
   };
 
 
-  // Get note data
-  useEffect(() => {
-    if (receivedNote) {
-      setNoteId(receivedNote._id);
-      setTitle(receivedNote.title);
-      setColor(receivedNote.color);
-      setLists(receivedNote.lists ?? []);
-      setDescription(receivedNote.details);
-      setCategoryId(receivedNote.categoryId);
+  // fetch data
+  const handleFetchData = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/getSingleNote/${id}`);
+      const result = await response.json();
 
-      autoNoteId = receivedNote._id;
-      autoColor = receivedNote.color;
-      autoTitle = receivedNote.title;
-      autoLists = receivedNote.lists ?? [];
-      autoDescription = receivedNote.details;
-      autoCategoryId = receivedNote.categoryId;
+      if (!response.ok) {
+        throw new Error("Note not found!");
+      }
 
-      initialAutoTitle = receivedNote.title;
-      initialAutoColor = receivedNote.color;
-      initialAutoLists = receivedNote.lists ?? [];
-      initialAutoDescription = receivedNote.details;
-      initialAutoCategoryId = receivedNote.categoryId;
+      setData(result.data);
+    } catch (error: any) {
+      setError("Something happened wrong!");
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000)
     }
+  }
+
+  // fetch data effect
+  useEffect(() => {
+    handleFetchData();
     window.scrollTo(0, 0);
-  }, [receivedNote, user.id])
+  }, [id])
+
+  // setting data on states
+  useEffect(() => {
+    setNoteId(data?._id);
+    setTitle(data?.title);
+    setColor(data?.color);
+    setLists(data?.lists ?? []);
+    setDescription(data?.details);
+    setCategoryId(data?.categoryId);
+
+    autoNoteId = data?._id;
+    autoColor = data?.color;
+    autoTitle = data?.title;
+    autoLists = data?.lists ?? [];
+    autoDescription = data?.details;
+    autoCategoryId = data?.categoryId;
+
+    initialAutoTitle = data?.title;
+    initialAutoColor = data?.color;
+    initialAutoLists = data?.lists ?? [];
+    initialAutoDescription = data?.details;
+    initialAutoCategoryId = data?.categoryId;
+  }, [data])
 
   // Get changed data for auto save
   useEffect(() => {
     autoTitle = title;
     autoLists = lists;
     autoColor = color;
-    autoNoteId = noteId;
     autoCategoryId = categoryId;
     autoDescription = description;
-  }, [title, lists, description, categoryId, color, noteId])
+  }, [title, lists, description, categoryId, color])
 
 
   // This is for auto save
@@ -232,152 +255,158 @@ export default function InsideNote() {
           if (!result.success) { }
         })
     })
-  }, [])
+  }, [location])
 
 
 
   return (
     <Container>
-      <div className='overflow-auto'>
+      <div>
+        {
+          loading ? <InsideCardSkeleton></InsideCardSkeleton> :
+            !loading && error ? <Alert severity="error">{error}</Alert> :
+              <div className='overflow-auto'>
 
-        {/* loading ui */}
-        <div>
-          {
-            loading && <Box sx={{ width: '100%' }}>
-              <LinearProgress />
-            </Box>
-          }
-        </div>
-        {/* loading ui end */}
-
-
-        <nav className='flex items-center gap-x-5 mt-1'>
-
-          {/* nav scroller left */}
-          <div className="relative hidden md:block -mt-4">
-            <Button
-              className="bg-[#252525]! text-slate-300!"
-              onClick={() => scroll('left')}
-              variant="contained"
-              startIcon={<ArrowCircleLeftIcon></ArrowCircleLeftIcon>}>
-            </Button>
-          </div>
-          {/* nav scroller left end */}
-
-          <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
-            <div>
-              <Button
-                onClick={goBack}
-                variant="outlined"
-                className='text-slate-400! h-9 normal-case!'
-                startIcon={<ArrowBackIcon></ArrowBackIcon>}>
-                Back
-              </Button>
-            </div>
-
-            <Category setCategoryId={setCategoryId}></Category>
-
-            <div>
-              <Button
-                onClick={handleUpdate}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
-                <p>Save</p>
-              </Button>
-            </div>
-
-            <div>
-              <Button
-                onClick={addList}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
-                Lists
-              </Button>
-            </div>
-
-            <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
-
-            <div>
-              <Button
-                onClick={handleUpComing}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
-                Link
-              </Button>
-            </div>
-
-            <div>
-              <Button
-                onClick={handleUpComing}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<LandscapeIcon className="text-green-400"></LandscapeIcon>}>
-                Photos
-              </Button>
-            </div>
-
-            <div>
-              <Button
-                onClick={handleDelete}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<DeleteIcon className="text-red-500"></DeleteIcon>}>
-                Delete
-              </Button>
-            </div>
-          </div>
-
-          {/* nav scroller right */}
-          <div className="relative hidden md:block -mt-4">
-            <Button
-              className="bg-[#252525]! text-slate-300!"
-              onClick={() => scroll('right')}
-              variant="contained"
-              endIcon={<ArrowCircleRightIcon></ArrowCircleRightIcon>}>
-            </Button>
-          </div>
-          {/* nav scroller right end */}
-
-        </nav>
+                {/* loading ui */}
+                <div>
+                  {
+                    loading && <Box sx={{ width: '100%' }}>
+                      <LinearProgress />
+                    </Box>
+                  }
+                </div>
+                {/* loading ui end */}
 
 
-        {error && <Alert severity="error">{error}</Alert>}
-        {success && <Alert severity="success">Note updated.</Alert>}
-        {coming && <Alert severity="warning">{coming}</Alert>}
+                <nav className='flex items-center gap-x-5 mt-1'>
+
+                  {/* nav scroller left */}
+                  <div className="relative hidden md:block -mt-4">
+                    <Button
+                      className="bg-[#252525]! text-slate-300!"
+                      onClick={() => scroll('left')}
+                      variant="contained"
+                      startIcon={<ArrowCircleLeftIcon></ArrowCircleLeftIcon>}>
+                    </Button>
+                  </div>
+                  {/* nav scroller left end */}
+
+                  <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
+                    <div>
+                      <Button
+                        onClick={() => navigate(-1)}
+                        variant="outlined"
+                        className='text-slate-400! h-9 normal-case!'
+                        startIcon={<ArrowBackIcon></ArrowBackIcon>}>
+                        Back
+                      </Button>
+                    </div>
+
+                    <Category setCategoryId={setCategoryId}></Category>
+
+                    <div>
+                      <Button
+                        onClick={handleUpdate}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
+                        <p>Save</p>
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button
+                        onClick={addList}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
+                        Lists
+                      </Button>
+                    </div>
+
+                    <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+
+                    <div>
+                      <Button
+                        onClick={handleUpComing}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
+                        Link
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button
+                        onClick={handleUpComing}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<LandscapeIcon className="text-green-400"></LandscapeIcon>}>
+                        Photos
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button
+                        onClick={handleDelete}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<DeleteIcon className="text-red-500"></DeleteIcon>}>
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* nav scroller right */}
+                  <div className="relative hidden md:block -mt-4">
+                    <Button
+                      className="bg-[#252525]! text-slate-300!"
+                      onClick={() => scroll('right')}
+                      variant="contained"
+                      endIcon={<ArrowCircleRightIcon></ArrowCircleRightIcon>}>
+                    </Button>
+                  </div>
+                  {/* nav scroller right end */}
+
+                </nav>
 
 
-        {/* body section */}
-        <div className='text-white my-5'>
-          {/* title section */}
-          <section>
-            <input
-              style={{ color: color.header }}
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-              placeholder='Title'
-              type="text"
-              className='w-full outline-none text-2xl h-10 font-semibold border-b rounded-b border-gray-500'
-            />
-          </section>
+                {error && <Alert severity="error">{error}</Alert>}
+                {success && <Alert severity="success">Note updated.</Alert>}
+                {coming && <Alert severity="warning">{coming}</Alert>}
 
-          {/* list section */}
-          <div className="mt-2">
-            <ListsInputs lists={lists} setLists={setLists}></ListsInputs>
-          </div>
 
-          {/* text area section */}
-          <textarea
-            onChange={(e) => setDescription(e.target.value)}
-            value={description}
-            placeholder='Note'
-            className='w-full h-screen outline-none mt-5'>
-          </textarea>
-        </div>
-        {/* body section end */}
+                {/* body section */}
+                <div className='text-white my-5'>
+                  {/* title section */}
+                  <section>
+                    <input
+                      style={{ color: color.header }}
+                      onChange={(e) => setTitle(e.target.value)}
+                      value={title}
+                      placeholder='Title'
+                      type="text"
+                      className='w-full outline-none text-2xl h-10 font-semibold border-b rounded-b border-gray-500'
+                    />
+                  </section>
 
+                  {/* list section */}
+                  <div className="mt-2">
+                    <ListsInputs lists={lists} setLists={setLists}></ListsInputs>
+                  </div>
+
+                  {/* text area section */}
+                  <textarea
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                    placeholder='Note'
+                    className='w-full h-screen outline-none mt-5'>
+                  </textarea>
+                </div>
+                {/* body section end */}
+
+              </div>
+        }
       </div>
     </Container>
   )

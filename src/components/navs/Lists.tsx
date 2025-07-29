@@ -83,8 +83,8 @@ export default function ListsInputs({ lists, setLists }: Props) {
                         onChange={(e) => handleChange(e.target.value, index)}
                         onFocus={() => setFocusedIndex(index)}
                         onBlur={() => setFocusedIndex(null)}
-                        className={`${dragStart && index == dragIndex && 'drag-shaking bg-red-400'}
-                        ${dragStart && index == dragHoverIndex && 'drag-shaking bg-green-400'}
+                        className={`${dragStart && index == dragIndex && 'drag-shaking bg-red-200/50'}
+                        ${dragStart && index == dragHoverIndex && 'drag-shaking bg-green-200/50'}
                         h-9 border-0 outline-0 rounded-sm px-2 flex-1`}
                         placeholder="type here"
                     />

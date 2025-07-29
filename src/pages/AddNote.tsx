@@ -13,20 +13,21 @@ import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 import { baseURL } from "../utils/baseURL";
-import { useNavigate } from 'react-router'
 import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router'
 import { useMyProvider } from '../contextApi/ContextApi';
 import { Alert, Box, Button, LinearProgress } from '@mui/material'
 
 let autoTitle = "";
-let autoLists: string[] = [];
-let autoDescription = "";
-let autoCategoryId = "";
-let autoUserId = "";
 let autoColor = {};
+let autoUserId = "";
+let autoCategoryId = "";
+let autoDescription = "";
+let autoLists: string[] = [];
 
 export default function AddNote() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useMyProvider();
 
 
@@ -150,7 +151,7 @@ export default function AddNote() {
           if (!result.success) { }
         })
     })
-  }, [])
+  }, [location])
 
   return (
     <Container>

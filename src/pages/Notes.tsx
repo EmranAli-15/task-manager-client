@@ -64,10 +64,6 @@ export default function Notes() {
     }, [user?.id, id]);
 
 
-    const sendingDataInsideComponent = (data: any) => {
-        navigate('/inside-note', { state: data });
-    }
-
     return (
         <Container>
             <div className='overflow-auto h-screen'>
@@ -98,8 +94,8 @@ export default function Notes() {
                                             const details = note.details ?? '';
                                             const headerColor = note.color ? note.color?.header : '#314158';
                                             const bodyColor = note.color ? note.color?.body : '#1d293d';
-                                            return <div
-                                                onClick={() => sendingDataInsideComponent(note)}
+                                            return <Link
+                                                to={`/inside-note/${note._id}`}
                                                 key={note._id}
                                                 style={{ backgroundColor: bodyColor }}
                                                 className="text-white rounded-[30px] noteCardShadow h-60 cursor-pointer">
@@ -110,9 +106,6 @@ export default function Notes() {
                                                         <p style={{ backgroundColor: bodyColor }} className='rounded w-10 h-2'></p>
                                                         <p style={{ backgroundColor: bodyColor }} className='rounded w-16 h-2 my-1'></p>
                                                         <p style={{ backgroundColor: bodyColor }} className='rounded w-32 h-2'></p>
-                                                        {/* <p className='bg-slate-800 rounded w-10 h-2'></p>
-                                                        <p className='bg-slate-800 rounded w-16 h-2 my-1'></p>
-                                                        <p className='bg-slate-800 rounded w-32 h-2'></p> */}
                                                     </div>
                                                     <div>
                                                         <PushPinIcon className='text-slate-400 rotate-25'></PushPinIcon>
@@ -122,11 +115,11 @@ export default function Notes() {
                                                     <p className='text-black font-bold text-lg line-clamp-1'>
                                                         {title}
                                                     </p>
-                                                    <p className='mt-5 text-slate-400 line-clamp-3'>
+                                                    <p className='mt-5 text-slate-700 line-clamp-3'>
                                                         {details}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         })
                                     }
                                 </div>

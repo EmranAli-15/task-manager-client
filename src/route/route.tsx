@@ -29,7 +29,7 @@ const Router = createBrowserRouter([
         element: <Protected><Notes></Notes></Protected>,
     },
     {
-        path: "/inside-note",
+        path: "/inside-note/:id",
         element: <Protected><InsideNote></InsideNote></Protected>,
     }
 ]);
