@@ -5,24 +5,24 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import "../../App.css"
 
 type Props = {
-    links: string[];
-    setLinks: React.Dispatch<React.SetStateAction<string[]>>;
+    lists: string[];
+    setLists: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-export default function LinkInputs({ links, setLinks }: Props) {
+export default function ListsInputs({ lists, setLists }: Props) {
 
     // LINKS RELATED ACTIONS------------------
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
     const handleChange = (text: string, index: number) => {
-        let currentLinks = [...links];
-        currentLinks.splice(index, 1, text);
-        setLinks(currentLinks);
+        let currentLists = [...lists];
+        currentLists.splice(index, 1, text);
+        setLists(currentLists);
     };
 
     const handleDelete = (index: number) => {
-        let currentLinks = [...links];
-        currentLinks.splice(index, 1);
-        setLinks(currentLinks);
+        let currentLists = [...lists];
+        currentLists.splice(index, 1);
+        setLists(currentLists);
     };
 
 
@@ -46,9 +46,9 @@ export default function LinkInputs({ links, setLinks }: Props) {
     const handleDrop = (dropIndex: number) => {
         if (dragIndex === null || dragIndex === dropIndex) return;
 
-        const updated = [...links];
+        const updated = [...lists];
         [updated[dragIndex], updated[dropIndex]] = [updated[dropIndex], updated[dragIndex]];
-        setLinks(updated);
+        setLists(updated);
         setDragIndex(null);
         setDragStart(false);
         setHoverDragIndex(null)
@@ -62,12 +62,12 @@ export default function LinkInputs({ links, setLinks }: Props) {
 
     return (
         <div className="space-y-2 max-h-[375px] overflow-auto">
-            {links.map((link, index) => (
-                <div key={index} className="flex items-center gap-2">
+            {lists.map((list, index) => (
+                <div key={index} className="flex items-center gap-y-2">
                     <div
                         className={`${dragStart && index == dragIndex && 'w-20 p-0'}
                         ${dragStart && index == dragHoverIndex && 'w-20 p-0'}
-                        cursor-pointer
+                        cursor-pointer relative -ml-[7px]
                         `}
                         draggable
                         onMouseLeave={mouseLeave}
@@ -79,7 +79,7 @@ export default function LinkInputs({ links, setLinks }: Props) {
                         ></DragIndicatorIcon>
                     </div>
                     <input
-                        value={link}
+                        value={list}
                         onChange={(e) => handleChange(e.target.value, index)}
                         onFocus={() => setFocusedIndex(index)}
                         onBlur={() => setFocusedIndex(null)}

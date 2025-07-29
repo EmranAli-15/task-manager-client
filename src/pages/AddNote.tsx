@@ -4,7 +4,7 @@ import Color from "../components/navs/Color";
 import Container from '../components/Container';
 import HomeIcon from '@mui/icons-material/Home';
 import Category from "../components/navs/Category";
-import LinkInputs from "../components/navs/Links";
+import ListsInputs from "../components/navs/Lists";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
@@ -19,7 +19,7 @@ import { useMyProvider } from '../contextApi/ContextApi';
 import { Alert, Box, Button, LinearProgress } from '@mui/material'
 
 let autoTitle = "";
-let autoLinks: string[] = [];
+let autoLists: string[] = [];
 let autoDescription = "";
 let autoCategoryId = "";
 let autoColor = {};
@@ -30,7 +30,7 @@ export default function AddNote() {
 
 
   const [title, setTitle] = useState("");
-  const [links, setLinks] = useState<string[]>([]);
+  const [lists, setLists] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
@@ -53,17 +53,17 @@ export default function AddNote() {
   };
 
 
-  const addLink = () => {
-    setLinks(prev => [...prev, ""]);
+  const addLists = () => {
+    setLists(prev => [...prev, ""]);
   };
 
 
   const handleUpload = async () => {
     setError("");
     setLoading(true);
-    const data = { title, links, details: description, categoryId, userId: user.id, color };
+    const data = { title, lists, details: description, categoryId, userId: user.id, color };
 
-    if (!title && links.length == 0 && !description) {
+    if (!title && lists.length == 0 && !description) {
       setError("Empty note can't save!");
       setLoading(false);
       setTimeout(() => setError(""), 3000);
@@ -87,10 +87,15 @@ export default function AddNote() {
         setLoading(false);
         setTitle("");
         setDescription("");
+        setLists([])
 
       } catch (error: any) {
         setLoading(false);
         setError(error.message);
+      } finally {
+        setTimeout(() => {
+
+        }, 2000)
       }
     }
   }
@@ -103,18 +108,18 @@ export default function AddNote() {
 
   useEffect(() => {
     autoTitle = title;
-    autoLinks = links;
+    autoLists = lists;
     autoDescription = description;
     autoCategoryId = categoryId;
     autoColor = color;
-  }, [title, links, description, categoryId, color])
+  }, [title, lists, description, categoryId, color])
 
 
   useEffect(() => {
     return (() => {
       const data = {
         title: autoTitle,
-        links: autoLinks,
+        lists: autoLists,
         details: autoDescription,
         categoryId: autoCategoryId,
         userId: user.id,
@@ -122,7 +127,7 @@ export default function AddNote() {
       };
 
 
-      if (!data.title && data.links.length === 0 && !data.details) {
+      if (!data.title && data.lists.length === 0 && !data.details) {
         return;
       }
 
@@ -190,10 +195,19 @@ export default function AddNote() {
 
             <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
 
+            <div>
+              <Button
+                onClick={addLists}
+                variant="outlined"
+                className='text-slate-400! normal-case!'
+                endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
+                Lists
+              </Button>
+            </div>
 
             <div>
               <Button
-                onClick={addLink}
+                onClick={handleUpComing}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
                 endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
@@ -201,16 +215,6 @@ export default function AddNote() {
               </Button>
             </div>
 
-
-            <div>
-              <Button
-                onClick={handleUpComing}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
-                Lists
-              </Button>
-            </div>
 
             <div>
               <Button
@@ -256,7 +260,7 @@ export default function AddNote() {
 
 
           {/* LINKS SECTION */}
-          <LinkInputs links={links} setLinks={setLinks} />
+          <ListsInputs lists={lists} setLists={setLists} />
 
 
           {/* TEXTAREA SECTION */}

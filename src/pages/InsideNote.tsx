@@ -1,27 +1,27 @@
 import "../App.css";
+import { baseURL } from '../utils/baseURL';
+import { useMyProvider } from '../contextApi/ContextApi';
+import { useLocation, useNavigate } from 'react-router'
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Box, Button, LinearProgress } from '@mui/material'
+
+import Color from '../components/navs/Color';
+import Container from '../components/Container';
+import Category from '../components/navs/Category';
+import ListsInputs from "../components/navs/Lists";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import { Alert, Box, Button, LinearProgress } from '@mui/material'
-import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LandscapeIcon from '@mui/icons-material/Landscape';
-
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router'
-import Container from '../components/Container';
-import { useMyProvider } from '../contextApi/ContextApi';
-import { baseURL } from '../utils/baseURL';
-import Color from '../components/navs/Color';
-import Category from '../components/navs/Category';
-import LinkInputs from '../components/navs/Links';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 type TNote = {
   title: string;
   details: string;
-  links: string[];
+  lists: string[];
   userId: string;
   categoryId: string;
   _id: string;
@@ -37,23 +37,24 @@ export default function InsideNote() {
   const location = useLocation();
   const receivedNote: TNote = location.state;
 
-  const [title, setTitle] = useState("");
   const [error, setError] = useState("");
+  const [coming, setComing] = useState("");
   const [loading, setLoading] = useState(false);
-  const [links, setLinks] = useState<string[]>([]);
+  const [success, setSuccess] = useState(false);
   const [openColor, setOpenColor] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [noteId, setNoteId] = useState("");
+  const [lists, setLists] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
-  const [noteId, setNoteId] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [coming, setComing] = useState("");
 
   useEffect(() => {
     if (receivedNote) {
       setTitle(receivedNote.title);
+      setLists(receivedNote.lists ?? []);
       setDescription(receivedNote.details);
-      setLinks(receivedNote.links ?? []);
       setCategoryId(receivedNote.categoryId);
       setNoteId(receivedNote._id);
       if (receivedNote.color) {
@@ -66,19 +67,19 @@ export default function InsideNote() {
 
 
 
-  const addLink = () => {
-    setLinks(prev => [...prev, ""]);
+  const addList = () => {
+    setLists(prev => [...prev, ""]);
   };
 
   const handleUpdate = async () => {
     setError("");
     setLoading(true);
-    const data = { title, links, details: description, categoryId, userId: user.id, color };
+    const data = { title, lists, details: description, categoryId, userId: user.id, color };
 
-    if (!title && links.length == 0 && !description) {
-      setError("Empty note can't save!");
+    if (!title && lists.length == 0 && !description) {
+      setError("Empty note can't be save!");
       setLoading(false);
-      setTimeout(() => setError(""), 3000);
+      setTimeout(() => setError(""), 2000);
     }
     else {
       try {
@@ -101,6 +102,11 @@ export default function InsideNote() {
       } catch (error: any) {
         setLoading(false);
         setError(error.message);
+      } finally {
+        setTimeout(() => {
+          setError("");
+          setSuccess(false);
+        }, 2000);
       }
     }
   }
@@ -123,18 +129,21 @@ export default function InsideNote() {
         throw new Error(result.message || 'Note delete failed!');
       }
 
-      setLoading(false);
       navigate(-1);
     } catch (error: any) {
       setLoading(false);
       setError(error.message);
+    } finally {
+      setTimeout(() => {
+        setError("");
+      }, 2000)
     }
   }
 
 
   const handleUpComing = () => {
     setComing("Up Coming Feature!!");
-    setTimeout(() => setComing(""), 3000);
+    setTimeout(() => setComing(""), 2000);
   }
 
 
@@ -150,7 +159,9 @@ export default function InsideNote() {
 
   return (
     <Container>
-      <div className='overflow-auto pt-1'>
+      <div className='overflow-auto'>
+
+        {/* loading ui */}
         <div>
           {
             loading && <Box sx={{ width: '100%' }}>
@@ -158,12 +169,12 @@ export default function InsideNote() {
             </Box>
           }
         </div>
-        {error && <Alert severity="error">{error}</Alert>}
-        {success && <Alert severity="success">Note updated.</Alert>}
+        {/* loading ui end */}
 
 
+        <nav className='flex items-center gap-x-5 mt-1'>
 
-        <nav className='flex items-center gap-x-5'>
+          {/* nav scroller left */}
           <div className="relative hidden md:block -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
@@ -172,6 +183,8 @@ export default function InsideNote() {
               startIcon={<ArrowCircleLeftIcon></ArrowCircleLeftIcon>}>
             </Button>
           </div>
+          {/* nav scroller left end */}
+
           <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
             <div>
               <Button
@@ -197,11 +210,11 @@ export default function InsideNote() {
 
             <div>
               <Button
-                onClick={addLink}
+                onClick={addList}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
-                endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
-                Link
+                endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
+                Lists
               </Button>
             </div>
 
@@ -212,8 +225,8 @@ export default function InsideNote() {
                 onClick={handleUpComing}
                 variant="outlined"
                 className='text-slate-400! normal-case!'
-                endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
-                Lists
+                endIcon={<InsertLinkIcon className="text-blue-600"></InsertLinkIcon>}>
+                Link
               </Button>
             </div>
 
@@ -237,6 +250,8 @@ export default function InsideNote() {
               </Button>
             </div>
           </div>
+
+          {/* nav scroller right */}
           <div className="relative hidden md:block -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
@@ -245,18 +260,19 @@ export default function InsideNote() {
               endIcon={<ArrowCircleRightIcon></ArrowCircleRightIcon>}>
             </Button>
           </div>
+          {/* nav scroller right end */}
+
         </nav>
 
 
-
+        {error && <Alert severity="error">{error}</Alert>}
+        {success && <Alert severity="success">Note updated.</Alert>}
         {coming && <Alert severity="warning">{coming}</Alert>}
 
 
-
-        <div className='text-white my-2 mt-3 px-2 rounded'>
-
-
-          {/* TITLE SECTION */}
+        {/* body section */}
+        <div className='text-white my-5 px-2 rounded'>
+          {/* title section */}
           <section>
             <input
               style={{ color: color.header }}
@@ -264,24 +280,26 @@ export default function InsideNote() {
               value={title}
               placeholder='Title'
               type="text"
-              className='w-full outline-none text-2xl h-10 mb-2 p-2 font-semibold border-b border-gray-500'
+              className='w-full outline-none text-2xl h-10 font-semibold border-b rounded-b border-gray-500'
             />
           </section>
 
+          {/* list section */}
+          <div className="mt-2">
+            <ListsInputs lists={lists} setLists={setLists}></ListsInputs>
+          </div>
 
-          {/* LINK SECTION */}
-          <LinkInputs links={links} setLinks={setLinks} />
-
-
-          {/* TEXTAREA SECTION */}
+          {/* text area section */}
           <textarea
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             autoFocus
             placeholder='Note'
-            className='w-full h-screen outline-none mt-3'>
+            className='w-full h-screen outline-none mt-5'>
           </textarea>
         </div>
+        {/* body section end */}
+
       </div>
     </Container>
   )
