@@ -271,7 +271,7 @@ export default function InsideNote() {
 
 
         {/* body section */}
-        <div className='text-white my-5 px-2 rounded'>
+        <div className='text-white my-5'>
           {/* title section */}
           <section>
             <input

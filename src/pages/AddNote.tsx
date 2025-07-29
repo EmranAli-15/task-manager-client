@@ -87,14 +87,14 @@ export default function AddNote() {
         setLoading(false);
         setTitle("");
         setDescription("");
-        setLists([])
+        setLists([]);
 
       } catch (error: any) {
         setLoading(false);
         setError(error.message);
       } finally {
         setTimeout(() => {
-
+          setError("");
         }, 2000)
       }
     }
@@ -103,7 +103,7 @@ export default function AddNote() {
 
   const handleUpComing = () => {
     setComing("Up Coming Feature!!");
-    setTimeout(() => setComing(""), 3000);
+    setTimeout(() => setComing(""), 2000);
   }
 
   useEffect(() => {
@@ -149,6 +149,7 @@ export default function AddNote() {
     <Container>
       <div className="h-screen overflow-auto">
 
+        {/* loading ui */}
         <div>
           {
             loading && <Box sx={{ width: '100%' }}>
@@ -156,11 +157,12 @@ export default function AddNote() {
             </Box>
           }
         </div>
+        {/* loading ui end */}
 
 
+        <nav className='flex items-center gap-x-5 mt-1'>
 
-
-        <nav className='pt-1 flex items-center gap-x-5'>
+          {/* nav scroller left */}
           <div className="relative hidden md:block -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
@@ -169,6 +171,7 @@ export default function AddNote() {
               startIcon={<ArrowCircleLeftIcon></ArrowCircleLeftIcon>}>
             </Button>
           </div>
+          {/* nav scroller left end */}
 
           <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
             <div>
@@ -181,7 +184,9 @@ export default function AddNote() {
               </Button>
             </div>
 
-            <Category setCategoryId={setCategoryId}></Category>
+            <div>
+              <Category setCategoryId={setCategoryId}></Category>
+            </div>
 
             <div>
               <Button
@@ -193,7 +198,9 @@ export default function AddNote() {
               </Button>
             </div>
 
-            <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+            <div>
+              <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+            </div>
 
             <div>
               <Button
@@ -215,7 +222,6 @@ export default function AddNote() {
               </Button>
             </div>
 
-
             <div>
               <Button
                 onClick={handleUpComing}
@@ -227,6 +233,7 @@ export default function AddNote() {
             </div>
           </div>
 
+          {/* nav scroller right */}
           <div className="relative hidden md:block -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
@@ -235,6 +242,8 @@ export default function AddNote() {
               endIcon={<ArrowCircleRightIcon></ArrowCircleRightIcon>}>
             </Button>
           </div>
+          {/* nav scroller right end */}
+
         </nav>
 
 
@@ -242,11 +251,9 @@ export default function AddNote() {
         {coming && <Alert severity="warning">{coming}</Alert>}
 
 
+        <div className='text-white my-5'>
 
-
-        <div className='text-white my-2 p-3 rounded'>
-
-          {/* TITLE SECTION */}
+          {/* title section */}
           <section>
             <input
               style={{ color: color.header }}
@@ -254,16 +261,18 @@ export default function AddNote() {
               value={title}
               placeholder='Title'
               type="text"
-              className='w-full outline-none text-2xl h-10 mb-2 font-semibold border-b border-gray-500'
+              className='w-full outline-none text-2xl h-10 font-semibold border-b rounded-b border-gray-500'
             />
           </section>
 
 
-          {/* LINKS SECTION */}
-          <ListsInputs lists={lists} setLists={setLists} />
+          {/* lists section */}
+          <div className="mt-2">
+            <ListsInputs lists={lists} setLists={setLists} />
+          </div>
 
 
-          {/* TEXTAREA SECTION */}
+          {/* textarea section */}
           <textarea
             onChange={(e) => setDescription(e.target.value)}
             value={description}
