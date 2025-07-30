@@ -8,12 +8,23 @@ import Container from '../components/Container';
 import { useEffect, useState } from 'react';
 import HomeCardSkeleton from '../ui/HomeCardSkeleton';
 import { baseURL } from '../utils/baseURL';
+import { BusinessIcon, EducationIcon, HobbyIcon, HomeWorkIcon, IdeaIcon, WorkSpaceIcon } from '../icons/Icons';
 
 type TCard = {
     name: string,
     image: string,
-    _id: string
+    _id: string,
+    index: number,
 }
+
+const icons = [
+    <WorkSpaceIcon></WorkSpaceIcon>,
+    <HomeWorkIcon></HomeWorkIcon>,
+    <IdeaIcon></IdeaIcon>,
+    <HobbyIcon></HobbyIcon>,
+    <EducationIcon></EducationIcon>,
+    <BusinessIcon></BusinessIcon>
+]
 
 export default function Home() {
     const { user, setLoading: providerLoading } = useMyProvider();
@@ -78,8 +89,13 @@ export default function Home() {
                                         {
                                             categories.map((item: TCard, index: any) => {
                                                 return (
-                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 relative' key={index}>
-                                                        <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" />
+                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 relative hover:bg-slate-700! transition-all' key={index}>
+                                                        {/* <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" /> */}
+                                                        <div className='flex items-center justify-center'>
+                                                            {
+                                                                icons[item.index]
+                                                            }
+                                                        </div>
                                                         <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
                                                     </Link>
                                                 )
