@@ -1,17 +1,18 @@
-import { Alert, Button } from '@mui/material';
-import { useEffect, useState } from 'react';
 import Container from '../components/Container';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import NotesCardSkeleton from '../ui/NotesCardSkeleton';
-import { useMyProvider } from '../contextApi/ContextApi';
 import PushPinIcon from '@mui/icons-material/PushPin';
+import NotesCardSkeleton from '../ui/NotesCardSkeleton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link, useNavigate, useParams } from 'react-router';
 
+import { baseURL } from '../utils/baseURL';
+import { useEffect, useState } from 'react';
+import { Alert, Button } from '@mui/material';
+import { useMyProvider } from '../contextApi/ContextApi';
+import { Link, useLocation, useNavigate, useParams } from 'react-router';
 
 import "../App.css"
-import { baseURL } from '../utils/baseURL';
 
+let totalNotes: number = 1;
 
 type TNote = {
     _id: string;
@@ -24,14 +25,14 @@ type TNote = {
 }
 
 export default function Notes() {
-    const id = useParams();
+    const { id } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
     const { user } = useMyProvider();
+
     const [notes, setNotes] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
-
+    const [loading, setLoading] = useState(true);
 
     const handleFetchData = async () => {
         try {
@@ -51,6 +52,7 @@ export default function Notes() {
             }
 
             setNotes(result.data);
+            totalNotes = result.data.length;
             setLoading(false);
         } catch (error: any) {
             setLoading(false);
@@ -63,6 +65,30 @@ export default function Notes() {
         window.scrollTo(0, 0);
     }, [user?.id, id]);
 
+    useEffect(() => {
+        if (!loading) {
+            totalNotes = notes.length;
+        }
+    }, [loading])
+
+    useEffect(() => {
+        return (() => {
+            if (totalNotes == 0) {
+                fetch(`${baseURL}/api/deleteCategory`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ categoryId: id, userId: user.id })
+                    }
+                )
+                    .then(res => res.json())
+                    .then(result => { if (!result) { } })
+            }
+            totalNotes = 1
+        })
+    }, [location])
 
     return (
         <Container>
@@ -86,7 +112,7 @@ export default function Notes() {
                 {
                     loading ? <NotesCardSkeleton></NotesCardSkeleton> :
                         error && !loading ? <Alert severity="error">{error}</Alert> :
-                            !error && !loading && notes.length == 0 ? <Alert severity="warning">No notes saved!</Alert> :
+                            !error && !loading && notes.length == 0 ? <Alert severity="warning">There are no notes, It will delete automatically!</Alert> :
                                 <div className='grid md:grid-cols-3 gap-2 h-60'>
                                     {
                                         notes.map((note: TNote) => {
