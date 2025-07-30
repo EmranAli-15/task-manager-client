@@ -34,7 +34,7 @@ export default function AddNote() {
   const [title, setTitle] = useState("");
   const [lists, setLists] = useState<string[]>([]);
   const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
+  const [categoryId, setCategoryId] = useState("687231b05282890fad825d83");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
 
   const [error, setError] = useState("");
@@ -171,7 +171,7 @@ export default function AddNote() {
         <nav className='flex items-center gap-x-5 mt-1'>
 
           {/* nav scroller left */}
-          <div className="relative hidden md:block -mt-4">
+          <div className="relative hidden -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
               onClick={() => scroll('left')}
@@ -181,7 +181,7 @@ export default function AddNote() {
           </div>
           {/* nav scroller left end */}
 
-          <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
+          <div ref={scrollRef} className='flex items-center gap-2 overflow-auto md:flex-wrap'>
             <div>
               <Button
                 onClick={() => navigate("/")}
@@ -192,23 +192,7 @@ export default function AddNote() {
               </Button>
             </div>
 
-            <div>
-              <Category setCategoryId={setCategoryId}></Category>
-            </div>
-
-            <div>
-              <Button
-                onClick={handleUpload}
-                variant="outlined"
-                className='text-slate-400! normal-case!'
-                endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
-                <p>Save</p>
-              </Button>
-            </div>
-
-            <div>
-              <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
-            </div>
+            <Category setCategoryId={setCategoryId}></Category>
 
             <div>
               <Button
@@ -217,6 +201,18 @@ export default function AddNote() {
                 className='text-slate-400! normal-case!'
                 endIcon={<ChecklistIcon className="text-orange-400"></ChecklistIcon>}>
                 Lists
+              </Button>
+            </div>
+
+            <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+
+            <div>
+              <Button
+                onClick={handleUpload}
+                variant="outlined"
+                className='text-slate-400! normal-case!'
+                endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
+                <p>Save</p>
               </Button>
             </div>
 
@@ -242,7 +238,7 @@ export default function AddNote() {
           </div>
 
           {/* nav scroller right */}
-          <div className="relative hidden md:block -mt-4">
+          <div className="relative hidden -mt-4">
             <Button
               className="bg-[#252525]! text-slate-300!"
               onClick={() => scroll('right')}
@@ -260,7 +256,7 @@ export default function AddNote() {
         {success && <Alert severity="success">{success}</Alert>}
 
 
-        <div className='text-white my-5'>
+        <div className='text-white my-5 px-2 md:px-0'>
 
           {/* title section */}
           <section>

@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { Alert, Box, Button, LinearProgress } from '@mui/material'
 
+import Swal from 'sweetalert2';
+
 import Color from '../components/navs/Color';
 import Container from '../components/Container';
 import Category from '../components/navs/Category';
@@ -63,13 +65,16 @@ export default function InsideNote() {
   const [noteId, setNoteId] = useState("");
   const [lists, setLists] = useState<string[]>([]);
   const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("687231b05282890fad825d85");
+  const [categoryId, setCategoryId] = useState("687231b05282890fad825d83");
   const [color, setColor] = useState({ header: "#ffdf20", body: "#fff085" });
 
 
   const addList = () => {
     setLists(prev => [...prev, ""]);
   };
+
+
+
 
   const handleUpdate = async () => {
     setError("");
@@ -111,9 +116,12 @@ export default function InsideNote() {
     }
   }
 
-  const handleDelete = async () => {
+
+
+  const handleDeleteConfirm = async () => {
     setError("");
     setLoading(true);
+
     try {
       const response = await fetch(`${baseURL}/api/deleteNote/${noteId}`, {
         method: 'DELETE',
@@ -137,6 +145,21 @@ export default function InsideNote() {
         setError("");
       }, 2000)
     }
+  }
+  const handleDelete = async () => {
+    Swal.fire({
+      title: "Want to delete note?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteConfirm();
+      }
+      else return;
+    });
   }
 
   const handleUpComing = () => {
@@ -281,7 +304,7 @@ export default function InsideNote() {
                 <nav className='flex items-center gap-x-5 mt-1'>
 
                   {/* nav scroller left */}
-                  <div className="relative hidden md:block -mt-4">
+                  <div className="relative hidden -mt-4">
                     <Button
                       className="bg-[#252525]! text-slate-300!"
                       onClick={() => scroll('left')}
@@ -291,7 +314,7 @@ export default function InsideNote() {
                   </div>
                   {/* nav scroller left end */}
 
-                  <div ref={scrollRef} className='flex items-center gap-x-2 overflow-auto'>
+                  <div ref={scrollRef} className='flex items-center gap-2 overflow-auto md:flex-wrap'>
                     <div>
                       <Button
                         onClick={() => navigate(-1)}
@@ -304,15 +327,7 @@ export default function InsideNote() {
 
                     <Category setCategoryId={setCategoryId}></Category>
 
-                    <div>
-                      <Button
-                        onClick={handleUpdate}
-                        variant="outlined"
-                        className='text-slate-400! normal-case!'
-                        endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
-                        <p>Save</p>
-                      </Button>
-                    </div>
+                    <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
 
                     <div>
                       <Button
@@ -324,7 +339,15 @@ export default function InsideNote() {
                       </Button>
                     </div>
 
-                    <Color openColor={openColor} setOpenColor={setOpenColor} color={color} setColor={setColor}></Color>
+                    <div>
+                      <Button
+                        onClick={handleUpdate}
+                        variant="outlined"
+                        className='text-slate-400! normal-case!'
+                        endIcon={<OnlinePredictionIcon className="text-red-600"></OnlinePredictionIcon>}>
+                        <p>Save</p>
+                      </Button>
+                    </div>
 
                     <div>
                       <Button
@@ -358,7 +381,7 @@ export default function InsideNote() {
                   </div>
 
                   {/* nav scroller right */}
-                  <div className="relative hidden md:block -mt-4">
+                  <div className="relative hidden -mt-4">
                     <Button
                       className="bg-[#252525]! text-slate-300!"
                       onClick={() => scroll('right')}
@@ -377,7 +400,7 @@ export default function InsideNote() {
 
 
                 {/* body section */}
-                <div className='text-white my-5'>
+                <div className='text-white my-5 px-2 md:px-0'>
                   {/* title section */}
                   <section>
                     <input

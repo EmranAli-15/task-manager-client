@@ -112,7 +112,7 @@ export default function Notes() {
                 {
                     loading ? <NotesCardSkeleton></NotesCardSkeleton> :
                         error && !loading ? <Alert severity="error">{error}</Alert> :
-                            !error && !loading && notes.length == 0 ? <Alert severity="warning">There are no notes, It will delete automatically!</Alert> :
+                            !error && !loading && notes.length == 0 ? <Alert severity="warning">There are no notes, this category will delete automatically!</Alert> :
                                 <div className='grid md:grid-cols-3 gap-2 h-60'>
                                     {
                                         notes.map((note: TNote) => {
