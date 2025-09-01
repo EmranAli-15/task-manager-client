@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import HomeCardSkeleton from '../ui/HomeCardSkeleton';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { baseURL } from '../utils/baseURL';
-import { BusinessIcon, EducationIcon, HobbyIcon, HomeWorkIcon, IdeaIcon, WorkSpaceIcon } from '../icons/Icons';
+// import { BusinessIcon, EducationIcon, HobbyIcon, HomeWorkIcon, IdeaIcon, WorkSpaceIcon } from '../icons/Icons';
 import Modal from '../components/Modal';
 
 type TCard = {
@@ -19,14 +19,14 @@ type TCard = {
     index: number,
 }
 
-const icons = [
-    <WorkSpaceIcon></WorkSpaceIcon>,
-    <HomeWorkIcon></HomeWorkIcon>,
-    <IdeaIcon></IdeaIcon>,
-    <HobbyIcon></HobbyIcon>,
-    <EducationIcon></EducationIcon>,
-    <BusinessIcon></BusinessIcon>
-]
+// const icons = [
+//     <WorkSpaceIcon></WorkSpaceIcon>,
+//     <HomeWorkIcon></HomeWorkIcon>,
+//     <IdeaIcon></IdeaIcon>,
+//     <HobbyIcon></HobbyIcon>,
+//     <EducationIcon></EducationIcon>,
+//     <BusinessIcon></BusinessIcon>
+// ]
 
 export default function Home() {
     const { user, setLoading: providerLoading } = useMyProvider();
@@ -85,10 +85,6 @@ export default function Home() {
             <div>
 
                 <div className='flex items-center justify-between pt-1 mb-3'>
-                    {/* <div>
-                        <Button onClick={handleLogOut} variant='outlined' className='text-slate-400! normal-case!' startIcon={<LogoutIcon className='rotate-180'></LogoutIcon>}>Log Out</Button>
-                    </div> */}
-
                     <div>
                         <Button onClick={() => setModal(true)} variant='outlined'>
                             <PowerSettingsNewIcon className='text-blue-800 font-bold'></PowerSettingsNewIcon>
@@ -111,13 +107,15 @@ export default function Home() {
                                         {
                                             categories.map((item: TCard, index: any) => {
                                                 return (
-                                                    <Link to={`/notes/${item._id}`} className='w-full h-60 relative hover:bg-slate-700! transition-all' key={index}>
-                                                        {/* <img className='object-cover w-full h-full blur-[1px]' src={item.image} alt="" /> */}
+                                                    <Link to={`/notes/${item._id}`} className='w-full h-auto relative hover:bg-slate-700! transition-all' key={index}>
                                                         <div className='flex items-center justify-center'>
+                                                            <img className='object-cover w-[200px] h-full' src={item.image} alt="" />
+                                                        </div>
+                                                        {/* <div className='flex items-center justify-center'>
                                                             {
                                                                 icons[item.index]
                                                             }
-                                                        </div>
+                                                        </div> */}
                                                         <h1 className='absolute font-bold text-2xl top-0 flex bg-black/30 p-3 rounded w-full text-white'>{item.name}</h1>
                                                     </Link>
                                                 )
