@@ -7,8 +7,10 @@ import { useMyProvider } from '../contextApi/ContextApi'
 import Container from '../components/Container';
 import { useEffect, useState } from 'react';
 import HomeCardSkeleton from '../ui/HomeCardSkeleton';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { baseURL } from '../utils/baseURL';
 import { BusinessIcon, EducationIcon, HobbyIcon, HomeWorkIcon, IdeaIcon, WorkSpaceIcon } from '../icons/Icons';
+import Modal from '../components/Modal';
 
 type TCard = {
     name: string,
@@ -28,6 +30,9 @@ const icons = [
 
 export default function Home() {
     const { user, setLoading: providerLoading } = useMyProvider();
+
+    const [modal, setModal] = useState(false);
+
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -36,6 +41,7 @@ export default function Home() {
 
     const handleLogOut = () => {
         localStorage.removeItem("token");
+        setModal(false);
         providerLoading(true);
     }
 
@@ -66,11 +72,27 @@ export default function Home() {
 
     return (
         <Container>
+            <Modal modal={modal} setModal={setModal}>
+                <div className='bg-[#3f6ed3] rounded-md text-white px-28 py-10 flex items-center gap-x-5'>
+                    <div>
+                        <Button onClick={handleLogOut} variant='outlined' className='text-white! border-red-600! bg-[#d68888]! normal-case!' startIcon={<LogoutIcon className='rotate-180'></LogoutIcon>}>Log Out</Button>
+                    </div>
+                    <div>
+                        <Button onClick={() => setModal(false)} variant='outlined' className='text-white! border-yellow-400! bg-[#acaa5e]! normal-case!'>Cacle</Button>
+                    </div>
+                </div>
+            </Modal>
             <div>
 
                 <div className='flex items-center justify-between pt-1 mb-3'>
-                    <div>
+                    {/* <div>
                         <Button onClick={handleLogOut} variant='outlined' className='text-slate-400! normal-case!' startIcon={<LogoutIcon className='rotate-180'></LogoutIcon>}>Log Out</Button>
+                    </div> */}
+
+                    <div>
+                        <Button onClick={() => setModal(true)} variant='outlined'>
+                            <PowerSettingsNewIcon className='text-blue-800 font-bold'></PowerSettingsNewIcon>
+                        </Button>
                     </div>
                     <div className='flex items-center gap-x-2'>
                         <Link to="add-note">
